@@ -3,6 +3,7 @@ package com.cooksys.conversion_tracking.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.conversion_tracking.model.Area;
@@ -48,7 +49,7 @@ public class AdministrativeService {
 	public Location createLocation(TXLocation location_tx) {
 		Area a  = ar.findOneByNum(location_tx.getNum());
 		if(a == null){
-			return null;
+			throw new DataIntegrityViolationException("Area num must exist!");
 		}
 		
 		Location l = new Location();
@@ -59,7 +60,14 @@ public class AdministrativeService {
 	
 	public User createUser(TXLong long_tx) {
 		Area a = ar.findOneByNum(long_tx.getNum());
-		User u = null;
+		
+		User u = ur.findOneByName(long_tx.getUsername()); // ensure we aren't going to create a record with a null username
+		if (long_tx.getUsername() == null) {
+			throw new DataIntegrityViolationException("Username cannot be null!");
+		}
+		if (u != null){
+			throw new DataIntegrityViolationException("User with username already exists!");
+		}
 		
 		u = new User();
 		u.setName(long_tx.getUsername());
@@ -71,6 +79,9 @@ public class AdministrativeService {
 	}
 
 	public Area createArea(Area area) {
+		if(area.getNum() == null) {
+			throw new DataIntegrityViolationException("Area num cannot be null!");
+		}
 		return ar.save(area);
 	}
 	
