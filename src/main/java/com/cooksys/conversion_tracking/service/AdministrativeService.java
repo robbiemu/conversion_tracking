@@ -61,13 +61,12 @@ public class AdministrativeService {
 		Area a = ar.findOneByNum(long_tx.getNum());
 		User u = null;
 		
-		if(a != null) {
-			u = new User();
-			u.setName(long_tx.getUsername());
-			u.setPassword(long_tx.getPassword());
-			u.setArea(a);
-			ur.save(u);
-		}
+		u = new User();
+		u.setName(long_tx.getUsername());
+		u.setPassword(long_tx.getPassword());
+		u.setArea(a);
+		ur.save(u);
+
 		return u;	
 	}
 
