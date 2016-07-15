@@ -25,7 +25,7 @@ public class Area extends Model {
 	}
 	
 	public Long  incrementUserLogin() {
-		return ++anonymousCount;
+		return ++userLoginCount;
 	}
 
 }
