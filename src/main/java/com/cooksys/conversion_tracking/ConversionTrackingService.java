@@ -130,7 +130,7 @@ public class ConversionTrackingService {
 	public TXResponse<Long> processHitsByArea(Integer num) {
 		Area a = ar.findOneByNum(num);
 		
-		Long l = a.getAnonymousCount() + ur.countByArea(a);
+		Long l = a.getAnonymousCount() + a.getUserLoginCount();
 		TXResponse<Long> txr = new TXResponse<>("HitsByArea");
 		txr.setField(l);
 		
