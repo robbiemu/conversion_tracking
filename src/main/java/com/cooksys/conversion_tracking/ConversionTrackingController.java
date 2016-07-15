@@ -84,6 +84,11 @@ public class ConversionTrackingController {
 	public TXResponse<Double> processConversionRateByAreaNum(@PathVariable Integer num) {
 		return cts.processConversionRateByArea(num);
 	}
+	
+	@RequestMapping("/area/num/{num}/hits")
+	public TXResponse<Long> getHitsByAreaNum(@PathVariable Integer num) {
+		return cts.processHitsByArea(num);
+	}
 
 	@RequestMapping(value="/location", method=RequestMethod.POST)
 	public Location postLocation(@RequestBody TXLocation location_tx) {

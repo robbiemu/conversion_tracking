@@ -70,7 +70,7 @@ public class ConversionTrackingService {
 		Integer converts = ur.countByArea(a);
 		
 		TXResponse<Double> txr = new TXResponse<>("ConversionRateByArea");
-		txr.setField(converts/(a.getAnonymousCount() * 1.0));
+		txr.setField(converts/(a.getAnonymousCount()+a.getUserLoginCount() * 1.0));
 		
 		return txr;
 	}
@@ -101,6 +101,8 @@ public class ConversionTrackingService {
 
 		if(a != null) {
 			a.decrement();
+			a.incrementUserLogin();
+			
 			ar.save(a);
 		}
 
@@ -123,6 +125,16 @@ public class ConversionTrackingService {
 
 	public Area createArea(Area area) {
 		return ar.save(area);
+	}
+
+	public TXResponse<Long> processHitsByArea(Integer num) {
+		Area a = ar.findOneByNum(num);
+		
+		Long l = a.getAnonymousCount() + ur.countByArea(a);
+		TXResponse<Long> txr = new TXResponse<>("HitsByArea");
+		txr.setField(l);
+		
+		return txr;
 	}
 
 }

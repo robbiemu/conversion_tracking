@@ -15,12 +15,17 @@ public class Area extends Model {
 	@Column String handle;
 	@Column Integer num;
 	@Column(name="anonymous_count") Long anonymousCount=0L;
+	@Column(name="user_login_count") Long userLoginCount=0L;
 	
 	public Long increment () {
 		return ++anonymousCount;
 	}
 	public Long decrement () {
 		return --anonymousCount;
+	}
+	
+	public Long  incrementUserLogin() {
+		return ++anonymousCount;
 	}
 
 }
