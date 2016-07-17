@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class User extends Model {
-	@Column(unique=true) String name;
+	@Column(unique=true, nullable=false) String name;
 	@Column String password;
 	@ManyToOne Area area;
 }

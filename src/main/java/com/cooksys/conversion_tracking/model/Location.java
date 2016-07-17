@@ -13,6 +13,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class Location extends Model {
-	@Column String title;
+	@Column(unique=true, nullable=false) String title;
 	@ManyToOne Area area;
 }
