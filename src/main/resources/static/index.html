@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="converstion_tracking">
+	<head>
+		<meta charset="UTF-8">
+
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+		<!-- conversion_tracking styles  -->
+		<link href="styles/conversion_tracking.css" rel="stylesheet">
+		
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-route.min.js"></script>
+    	<!--  conversion_tracking scripts  -->
+		<script src="scripts/constants.js"></script>
+		<script src="scripts/conversion_tracking.js"></script>		
+		<script src="scripts/angular_constants.js"></script>
+		<script src="scripts/home_controller.js"></script>
+		<script src="scripts/domain/user_controller.js"></script>
+		<script src="scripts/auth_service.js"></script>
+		<script src="scripts/routes.js"></script>		
+		
+		<title>Conversion Tracking</title>
+	</head>
+
+	<body>
+		<section id="content">
+			<ng-view></ng-view>
+		</section>
+	</body>
+
+</html>

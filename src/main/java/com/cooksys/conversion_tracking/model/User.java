@@ -15,5 +15,6 @@ import lombok.EqualsAndHashCode;
 public class User extends Model {
 	@Column(unique=true, nullable=false) String name;
 	@Column String password;
+	@Column(name="admin_rights") Boolean adminRights = false;
 	@ManyToOne Area area;
 }
