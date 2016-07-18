@@ -15,6 +15,8 @@ import com.cooksys.conversion_tracking.repository.UserRepository;
 import com.cooksys.conversion_tracking.tx.TXLocation;
 import com.cooksys.conversion_tracking.tx.TXLong;
 
+import static com.cooksys.conversion_tracking.Defs.*;
+
 @Service
 public class AdministrativeService {
 	@Autowired
@@ -53,6 +55,7 @@ public class AdministrativeService {
 		}
 		
 		Location l = new Location();
+		l.setVersion(LOCATION_TABLE_VERSION);
 		l.setTitle(location_tx.getTitle());
 		l.setArea(a);
 		return  lr.save(l);
@@ -70,6 +73,7 @@ public class AdministrativeService {
 		}
 		
 		u = new User();
+		u.setVersion(USER_TABLE_VERSION);
 		u.setName(long_tx.getUsername());
 		u.setPassword(long_tx.getPassword());
 		u.setArea(a);
@@ -83,6 +87,7 @@ public class AdministrativeService {
 		if(area.getNum() == null) {
 			throw new DataIntegrityViolationException("Area num cannot be null!");
 		}
+		area.setVersion(AREA_TABLE_VERSION);
 		return ar.save(area);
 	}
 	

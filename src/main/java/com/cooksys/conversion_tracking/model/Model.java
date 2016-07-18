@@ -13,6 +13,8 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import org.springframework.data.annotation.Version;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,21 +22,25 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class Model {
+	@JsonIgnore
 	@Id
 	@GeneratedValue
 	@Column(columnDefinition = "INT UNSIGNED", unique=true, nullable=false)
 	long id;
 
+	@JsonIgnore
     @Version
     @Column(name = "version", columnDefinition = "TINYINT")
     private int version = 0;
  
+	@JsonIgnore
     @Column(name = "last_updated", insertable = false, updatable = false,
     		columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     @Generated(value=GenerationTime.ALWAYS) 
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated; 
 
+	@JsonIgnore
     @Column(name="created", insertable=false, updatable=false, 
     		columnDefinition= "TIMESTAMP DEFAULT CURRENT_TIMESTAMP") 
     @Generated(value = GenerationTime.INSERT)
