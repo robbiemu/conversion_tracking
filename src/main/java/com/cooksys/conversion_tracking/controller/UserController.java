@@ -1,6 +1,7 @@
 package com.cooksys.conversion_tracking.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,7 +33,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/user/login", method=RequestMethod.POST)
-	public TXResponse<Boolean> processLogin(@RequestBody TXLong long_tx) {
+	public TXResponse<Map<String, Object>> processLogin(@RequestBody TXLong long_tx) {
 		return us.processLogin(long_tx);
 	}
 	

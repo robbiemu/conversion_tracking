@@ -5,9 +5,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class TXLong extends TXShort {
+public class TXLong {
 	String username;
 	String password;
 	Integer num;
-	
+	Boolean admin;
 }

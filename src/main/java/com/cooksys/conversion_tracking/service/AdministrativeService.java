@@ -73,6 +73,7 @@ public class AdministrativeService {
 		u.setName(long_tx.getUsername());
 		u.setPassword(long_tx.getPassword());
 		u.setArea(a);
+		u.setAdminRights(long_tx.getAdmin());
 		ur.save(u);
 
 		return u;	

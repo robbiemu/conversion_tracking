@@ -1,6 +1,8 @@
 package com.cooksys.conversion_tracking.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,21 @@ public class UserService {
 		return ur.findByArea(a);
 	}
 
-	public TXResponse<Boolean> processLogin(TXLong long_tx) {
-		TXResponse<Boolean> txr = new TXResponse<>("Login");
-		txr.setField(ur.findByNameAndPassword(long_tx.getUsername(), long_tx.getPassword()) != null? true: false);
+	public TXResponse<Map<String, Object>> processLogin(TXLong long_tx) {
+		TXResponse<Map<String, Object>> txr = new TXResponse<>("Login");
+		Map<String,Object> res = new HashMap<>();
+		
+		User u = ur.findByNameAndPassword(long_tx.getUsername(), long_tx.getPassword());
+		if(u == null) {
+			res.put("Logged In", false);
+		} else {
+			res.put("Logged In", true);
+			res.put("Admin account", u.getAdminRights());
+		}
+		txr.setField(res);
 
 		Area a = ar.findOneByNum(long_tx.getNum());
 		if(a != null) {
-
 			a.decrement();
 			a.incrementUserLogin();
 			
