@@ -26,7 +26,7 @@ angular.module(MODULE_NAME)
                 controller: 'UserController',
                 controllerAs: 'userController'
             })
-           .when('/login/:id', {
+           .when('/login/:extension', {
                 templateUrl: LOGIN_PAGE,
                 controller: 'UserController',
                 controllerAs: 'userController'

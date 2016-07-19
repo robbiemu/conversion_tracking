@@ -10,8 +10,13 @@ angular.module(MODULE_NAME).controller('UserController',
 			}
 		  
 		$scope.$on('$viewContentLoaded', function() {
-			if($routeParams.id > 0){
-				$http.post(SPRING_INCREMENTANON_URI, $routeParams.id)
+			if($routeParams.extension > 0){
+				$http.post(SPRING_FINDURL_URI, { baseURL: (/(.*)\/[^\/]/.exec($location.path()))[1], extensionURL: $routeParams.extension } )
+					.then((tx_response) => {
+						if(tx_response.status == 200) {
+							$http.post(SPRING_INCREMENT_ANONYMOUS_URI,  { label: tx_response.data.label})
+						}
+					})
 			}
 			let href = false
 			console.log("userController")

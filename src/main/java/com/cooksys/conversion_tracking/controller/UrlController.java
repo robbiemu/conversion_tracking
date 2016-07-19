@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cooksys.conversion_tracking.model.URL;
 import com.cooksys.conversion_tracking.service.UrlService;
 import com.cooksys.conversion_tracking.tx.TXResponse;
+import com.cooksys.conversion_tracking.tx.TXURLbyURL;
 import com.cooksys.conversion_tracking.tx.TXURLshort;
 
 @RestController
@@ -28,6 +30,12 @@ public class UrlController {
 		return us.decrement(short_tx);
 	}
 
+	@RequestMapping(value="/url/find", method=RequestMethod.POST)
+	public URL findByURL(@RequestBody TXURLbyURL tx) {
+		return us.findByURL(tx);
+	}
+
+	
 /*	@RequestMapping(value="/url/label", method=RequestMethod.DELETE)
 	public TXResponse<Boolean> deleteByLabel(@RequestBody TXURLshort short_tx) {
 		return us.deleteByLabel(short_tx);

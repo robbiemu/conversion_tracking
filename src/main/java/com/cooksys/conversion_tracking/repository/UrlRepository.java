@@ -6,4 +6,5 @@ import com.cooksys.conversion_tracking.model.URL;
 
 public interface UrlRepository extends JpaRepository<URL, Long> {
 	URL findOneByLabel(String label);
+	URL findOneByBaseURLAndExtensionURL(String baseURL, Integer extensionURL);
 }

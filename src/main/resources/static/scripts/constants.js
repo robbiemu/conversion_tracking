@@ -7,6 +7,7 @@ const DOMAIN_BASEDIR = 'scripts/domain'
 const SPRING_LOGIN_URI = '/user/login'
 const SPRING_LISTURLS_URI = '/urls'
 const SPRING_NEWURL_URI = '/url'
+const SPRING_FINDURL_URI = '/url/find'
 const SPRING_DELETEBYLABELURL_URI = '/url/label'
-const SPRINT_INCREMENTANON_URI = '/url/increment'
+const SPRING_INCREMENT_ANONYMOUS_URI = '/url/increment'
 	

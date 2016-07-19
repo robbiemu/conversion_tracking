@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.cooksys.conversion_tracking.model.URL;
 import com.cooksys.conversion_tracking.repository.UrlRepository;
 import com.cooksys.conversion_tracking.tx.TXResponse;
+import com.cooksys.conversion_tracking.tx.TXURLbyURL;
 import com.cooksys.conversion_tracking.tx.TXURLshort;
 
 @Service
@@ -46,6 +47,11 @@ public class UrlService {
 		txr.setField(true);
 		
 		return txr;	
+	}
+
+	public URL findByURL(TXURLbyURL tx) {
+
+		return ur.findOneByBaseURLAndExtensionURL(tx.getBaseURL(), tx.getExtensionURL());
 	}
 
 }
