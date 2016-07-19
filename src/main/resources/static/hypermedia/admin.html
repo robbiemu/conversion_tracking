@@ -53,7 +53,9 @@
       </div>
       <div class="tab-pane" id="labelsAndHits">
         <h1>Hits</h1>
-        <p>orange orange orange orange orange</p>
+        <ul class="outlined col-sm-8" ng-repeat="url in URLs">
+            <li><span class="big bold">{{url.anonymousCount}}</span><code>{{url.baseURL}}/{{url.extensionURL}}</code> - <span class="bold">{{url.label}}</span> - {{url.description}}</li>
+          </ul>
       </div>
     </div>
   </div>
