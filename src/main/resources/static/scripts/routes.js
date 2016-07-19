@@ -12,13 +12,21 @@ angular.module(MODULE_NAME)
             })
             .when('/admin', {
                 templateUrl: ADMIN_PAGE,
-                controller: 'HomeController',
-                controllerAs: 'homeController',
+                controller: 'AdminController',
+                controllerAs: 'adminController',
                 resolve: {
-                    factory: checkRouting
+                    factory: function ($q, $rootScope, $location, $http, Auth) {
+                    	loadURLs($rootScope, $http)
+                    	checkRouting($q, $rootScope, $location, Auth)
+                    }
                 }
             })
             .when('/login', {
+                templateUrl: LOGIN_PAGE,
+                controller: 'UserController',
+                controllerAs: 'userController'
+            })
+           .when('/login/:id', {
                 templateUrl: LOGIN_PAGE,
                 controller: 'UserController',
                 controllerAs: 'userController'
@@ -28,13 +36,18 @@ angular.module(MODULE_NAME)
         }
    ])
 
+const loadURLs = function ($rootScope, $http) {
+	$http.get(SPRING_LISTURLS_URI).then((tx_response) => {
+		if(tx_response.status == 200) {
+			$rootScope.URLs = tx_response.data			
+		}
+	})
+}
+   
 const checkRouting = function ($q, $rootScope, $location, Auth) {
         if (!Auth.isLoggedIn()) {
-            console.log(`${$location.path()} - route denied. User not logged in.`);
-            event.preventDefault();
-            $location.path('/login');
-        }
-        else {
-            console.log(`${$location.path()} - routing, User is logged in. IF all this is working, remove this message.`);
+            console.log(`${$location.path()} - route denied. User not logged in.`)
+            event.preventDefault()
+            $location.path('/login')
         }
 }

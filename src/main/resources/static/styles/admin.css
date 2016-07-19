@@ -1,0 +1,13 @@
+#basedir {
+	margin-left: 0.3em;
+}
+
+.outlined {
+	padding: 1em;
+	border-radius: calc(2em/3);
+	border: solid rgb(210,210,210) thin
+}
+
+ul {
+	list-style-type: none;
+}

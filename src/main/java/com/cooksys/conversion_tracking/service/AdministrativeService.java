@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 
 import com.cooksys.conversion_tracking.model.Area;
 import com.cooksys.conversion_tracking.model.Location;
+import com.cooksys.conversion_tracking.model.URL;
 import com.cooksys.conversion_tracking.model.User;
 import com.cooksys.conversion_tracking.repository.AreaRepository;
 import com.cooksys.conversion_tracking.repository.LocationRepository;
+import com.cooksys.conversion_tracking.repository.UrlRepository;
 import com.cooksys.conversion_tracking.repository.UserRepository;
 import com.cooksys.conversion_tracking.tx.TXLocation;
 import com.cooksys.conversion_tracking.tx.TXLong;
+import com.cooksys.conversion_tracking.tx.TXURLlong;
 
 import static com.cooksys.conversion_tracking.Defs.*;
 
@@ -28,6 +31,9 @@ public class AdministrativeService {
 	@Autowired
 	AreaRepository ar;
 	
+	@Autowired
+	UrlRepository urlr;
+	
 	public Location readLocation(Long pk) {
 		return lr.findOne(pk);
 	}
@@ -36,6 +42,9 @@ public class AdministrativeService {
 	}
 	public User readUser(Long pk) {
 		return ur.findOne(pk);
+	}
+	public URL readURL(Long pk) {
+		return urlr.findOne(pk);
 	}
 	
 	public List<Location> readLocations() {
@@ -46,6 +55,9 @@ public class AdministrativeService {
 	}
 	public List<User> readUsers() {
 		return ur.findAll();
+	}
+	public List<URL> readURLs() {
+		return urlr.findAll();
 	}
 
 	public Location createLocation(TXLocation location_tx) {
@@ -89,6 +101,27 @@ public class AdministrativeService {
 		}
 		area.setVersion(AREA_TABLE_VERSION);
 		return ar.save(area);
+	}
+	
+	public URL createURL(TXURLlong url_tx) {
+		if (url_tx.getLabel() == null ){
+			throw new DataIntegrityViolationException("URL label cannot be null!");
+		}
+		if(urlr.findOneByLabel(url_tx.getLabel()) != null) {
+			throw new DataIntegrityViolationException("URL label must be unique!");			
+		}
+		if(url_tx.getBaseURL() == null) {
+			throw new DataIntegrityViolationException("URL baseURL cannot be null!");
+		}
+		
+		URL u = new URL();
+		u.setVersion(URL_TABLE_VERSION);
+		u.setBaseURL(url_tx.getBaseURL());
+		u.setExtensionURL(url_tx.getExtensionURL());
+		u.setDescription(url_tx.getDescription());
+		u.setLabel(url_tx.getLabel());
+
+		return urlr.save(u);
 	}
 	
 }

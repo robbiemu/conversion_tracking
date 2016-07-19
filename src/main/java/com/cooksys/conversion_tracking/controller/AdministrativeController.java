@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.conversion_tracking.model.Area;
 import com.cooksys.conversion_tracking.model.Location;
+import com.cooksys.conversion_tracking.model.URL;
 import com.cooksys.conversion_tracking.model.User;
 import com.cooksys.conversion_tracking.service.AdministrativeService;
 import com.cooksys.conversion_tracking.tx.TXLocation;
 import com.cooksys.conversion_tracking.tx.TXLong;
+import com.cooksys.conversion_tracking.tx.TXURLlong;
 
 @RestController
 @CrossOrigin(methods = RequestMethod.POST)
@@ -23,6 +25,11 @@ public class AdministrativeController {
 	@Autowired
 	AdministrativeService as;
 
+	@RequestMapping("/url/{pk}")
+	public URL getURL(@PathVariable Long pk) {
+		return as.readURL(pk);
+	}
+	
 	@RequestMapping("/location/{pk}")
 	public Location getLocation(@PathVariable Long pk) {
 		return as.readLocation(pk);
@@ -38,6 +45,11 @@ public class AdministrativeController {
 		return as.readUser(pk);
 	}
 	
+	@RequestMapping("/urls")
+	public List<URL> getURLs() {
+		return as.readURLs();
+	}
+	
 	@RequestMapping("/locations")
 	public List<Location> getLocations() {
 		return as.readLocations();
@@ -51,6 +63,11 @@ public class AdministrativeController {
 	@RequestMapping("/users")
 	public List<User> getUsers() {
 		return as.readUsers();
+	}
+
+	@RequestMapping(value="/url", method=RequestMethod.POST)
+	public URL postURL(@RequestBody TXURLlong  url_tx) {
+		return as.createURL(url_tx);
 	}
 	
 	@RequestMapping(value="/user", method=RequestMethod.POST)

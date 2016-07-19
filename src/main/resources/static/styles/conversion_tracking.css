@@ -7,3 +7,17 @@
 .italic {
 	font-style: italic;
 }
+
+.jumbotron {
+	margin-bottom: 0;
+}
+
+.jumbotron h1, .jumbotron h2, .jumbotron h3, .jumbotron h4, .jumbotron h5, .jumbotron h6 {
+		font-family: Geneva, Tahoma, Verdana, sans-serif;
+}
+
+.subotron {
+	margin: 0;
+	padding: 0.6em 0 0.3em 1em;
+	background-color: rgba(0,0,0,0.1)	
+}

@@ -1,3 +1,76 @@
 <div id="admin_outer">
-    <p>Welcome to Conversion tracking <span class="red bold italic">administrative page</span>!</p>
+  <div class="jumbotron">
+    <div class="col-sm-offset-1">
+      <h1>Admin</h1>
+    </div>
+  </div>
+  <div class="col-sm-12 subotron">
+    <label for="base_url">BASE URL</label>
+    <input id="basedir" type="text" ng-model="homeController.path" readonly />
+  </div>
+  <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+    <li class="active"><a href="#home" data-toggle="tab">home</a></li>
+    <li class=""><a href="#newUrls" data-toggle="tab">new URLs</a></li>
+    <li><a href="#labelsAndHits" data-toggle="tab">hits</a></li>
+  </ul>
+
+  <div class="col-sm-offset-1 col-sm-10">
+    <div id="tab-content" class="tab-content">
+      <div class="tab-pane active" id="home">
+        <h3>Welcome to Conversion tracking <span class="red bold italic">administrative page</span>!</h3>
+      </div>
+      <div class="tab-pane" id="newUrls">
+        <h1>New URLs</h1>
+        <ul class="outlined col-sm-8">
+          <li>
+            <span id="new_url_button" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            <form id="input_new_url" class="input_new_url form-horizontal" ng-submit="new_url()">
+              <div class="form-group">
+                <label for="label" class="input_new_url control-label col-sm-2">Label</label>
+                <div class="col-sm-8">
+                  <input id="label" class="input_new_url form-control" ng-model="url.label" type="text" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="description" class="input_new_url control-label col-sm-2">Description</label>
+                <div class="col-sm-8">
+                  <input id="description" class="input_new_url form-control" ng-model="url.description" type="text" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-6">
+                  <input id="submit" class="input_new_url btn btn-primary" value="Submit" type="submit" />
+                  <input id="cancel" class="input_new_url btn btn-secondary" value="Cancel" type="button" />
+                </div>
+              </div>
+            </form>
+          </li>
+          <div ng-repeat="url in URLs">
+            <li><span id="url_button_{{url.label}}" class="delete_url_button glyphicon glyphicon-remove red"ng-click="delete(url.label)" aria-hidden="true"></span><code>{{url.baseURL}}/{{url.extensionURL}}</code> - <span class="bold">{{url.label}}</span> - {{url.description}}</li>
+          </div>
+        </ul>
+      </div>
+      <div class="tab-pane" id="labelsAndHits">
+        <h1>Hits</h1>
+        <p>orange orange orange orange orange</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('.input_new_url').hide();
+      $('#admin_outer #tabs a').click(() => {
+        event.preventDefault()
+      })
+      $('.input_new_url #cancel').click(() =>{
+        $('input.input_new_url:text').val("")
+        $('.input_new_url').hide();
+      })
+      $('#new_url_button').click(() => {
+        $('.input_new_url').show()
+      })
+      $('#tabs').tab()
+    });
+  </script>
 </div>

@@ -6,4 +6,5 @@ public class Defs {
 	public static final Integer USER_TABLE_VERSION = 1;
 	public static final Integer AREA_TABLE_VERSION = 0;
 	public static final Integer LOCATION_TABLE_VERSION = 0;
+	public static final Integer URL_TABLE_VERSION = 0;
 }
