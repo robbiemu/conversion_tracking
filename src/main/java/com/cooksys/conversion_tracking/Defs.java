@@ -7,4 +7,8 @@ public class Defs {
 	public static final Integer AREA_TABLE_VERSION = 0;
 	public static final Integer LOCATION_TABLE_VERSION = 0;
 	public static final Integer URL_TABLE_VERSION = 0;
+	
+	public static final String PRORATUM_WEEKLY = "weekly";
+	public static final String PRORATUM_MONTHLY = "monthly";
+	public static final String PRORATUM_YEARLY = "yearly";
 }

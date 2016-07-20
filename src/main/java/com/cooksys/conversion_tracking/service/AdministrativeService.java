@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.conversion_tracking.model.Area;
@@ -63,7 +64,7 @@ public class AdministrativeService {
 	public Location createLocation(TXLocation location_tx) {
 		Area a  = ar.findOneByNum(location_tx.getNum());
 		if(a == null){
-			throw new DataIntegrityViolationException("Area num must exist!");
+			throw new InvalidDataAccessApiUsageException("Area num must exist!");
 		}
 		
 		Location l = new Location();
@@ -78,7 +79,7 @@ public class AdministrativeService {
 		
 		User u = ur.findOneByName(long_tx.getUsername()); // ensure we aren't going to create a record with a null username
 		if (long_tx.getUsername() == null) {
-			throw new DataIntegrityViolationException("Username cannot be null!");
+			throw new InvalidDataAccessApiUsageException("Username cannot be null!");
 		}
 		if (u != null){
 			throw new DataIntegrityViolationException("User with username already exists!");
@@ -97,7 +98,7 @@ public class AdministrativeService {
 
 	public Area createArea(Area area) {
 		if(area.getNum() == null) {
-			throw new DataIntegrityViolationException("Area num cannot be null!");
+			throw new InvalidDataAccessApiUsageException("Area num cannot be null!");
 		}
 		area.setVersion(AREA_TABLE_VERSION);
 		return ar.save(area);

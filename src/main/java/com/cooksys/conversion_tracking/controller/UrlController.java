@@ -1,5 +1,8 @@
 package com.cooksys.conversion_tracking.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cooksys.conversion_tracking.Tuple;
 import com.cooksys.conversion_tracking.model.URL;
 import com.cooksys.conversion_tracking.service.UrlService;
 import com.cooksys.conversion_tracking.tx.TXResponse;
@@ -19,6 +23,16 @@ import com.cooksys.conversion_tracking.tx.TXURLshort;
 public class UrlController {
 	@Autowired
 	UrlService us;
+	
+	@RequestMapping("/urls/and/hits")
+	public TXResponse<List<Tuple<Long, URL>>> getURLsWithHits() {
+		return us.readURLsWithHits();
+	}	
+
+	@RequestMapping("/urls/and/hits/{proratum}")
+	public TXResponse<List<Tuple<Long, URL>>> getURLsWithHitsProRatum(@PathVariable String proratum) {
+		return us.readURLsWithHitsProRatum(proratum);
+	}	
 	
 	@RequestMapping(value="/url/increment", method=RequestMethod.POST)
 	public TXResponse<Boolean> increment(@RequestBody TXURLshort short_tx) {
@@ -34,7 +48,6 @@ public class UrlController {
 	public URL findByURL(@RequestBody TXURLbyURL tx) {
 		return us.findByURL(tx);
 	}
-
 	
 /*	@RequestMapping(value="/url/label", method=RequestMethod.DELETE)
 	public TXResponse<Boolean> deleteByLabel(@RequestBody TXURLshort short_tx) {
@@ -44,6 +57,16 @@ public class UrlController {
 	@RequestMapping(value="/url/label/{label}", method=RequestMethod.GET)
 	public TXResponse<Boolean> deleteByLabel(@PathVariable String label) {
 		return us.deleteByLabel(label);
+	}
+
+	@RequestMapping(value="/url/label/{label}/hits", method=RequestMethod.GET)
+	public TXResponse<Long> hitCountByLabel(@PathVariable String label) {
+		return us.hitCountByLabel(label);
+	}
+	
+	@RequestMapping(value="/url/label/{label}/hits/{proratum}", method=RequestMethod.GET)
+	public TXResponse<Long> hitCountByLabelAndProRatum(@PathVariable String label, @PathVariable String proratum) {
+		return us.hitCountByLabelAndProRatum(label, proratum);
 	}
 	
 }

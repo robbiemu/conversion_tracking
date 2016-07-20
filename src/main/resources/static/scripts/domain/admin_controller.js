@@ -37,7 +37,9 @@ angular.module(MODULE_NAME).controller('AdminController',
 			    $http.post(SPRING_NEWURL_URI, url).then((tx_response) => {
 			    	if(tx_response.status == 200){
 			    		// success
-			    		$scope.URLs.push(tx_response.data)
+			    		let url = tx_response.data
+			    		url.anonymousCount = 0
+			    		$scope.URLs.push(url)
 			    	} else {
 			    		// failure
 			    	}

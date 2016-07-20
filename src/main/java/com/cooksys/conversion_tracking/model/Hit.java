@@ -1,5 +1,9 @@
 package com.cooksys.conversion_tracking.model;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -19,6 +23,14 @@ public class Hit extends Model {
 	@Column Integer year;
 	@Column Long anonymousCount;
 	@JsonIgnore @ManyToOne URL url;
+	
+	public Hit(){
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(new Date()); // Give your own date
+
+		this.dayOfYear = cal.get(Calendar.DAY_OF_YEAR);
+		this.year = cal.get(Calendar.YEAR);
+	}
 	
 	public Long increment() {
 		return ++anonymousCount;

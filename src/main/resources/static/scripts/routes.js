@@ -37,9 +37,14 @@ angular.module(MODULE_NAME)
    ])
 
 const loadURLs = function ($rootScope, $http) {
-	$http.get(SPRING_LISTURLS_URI).then((tx_response) => {
+	$http.get(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI).then((tx_response) => {
 		if(tx_response.status == 200) {
-			$rootScope.URLs = tx_response.data			
+			$rootScope.URLs = []
+			for(let e in tx_response.data.field){
+				let url = tx_response.data.field[e].right
+				url.anonymousCount = tx_response.data.field[e].left
+				$rootScope.URLs.push(url)
+			}
 		}
 	})
 }

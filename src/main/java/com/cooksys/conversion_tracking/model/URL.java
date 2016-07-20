@@ -1,10 +1,7 @@
 package com.cooksys.conversion_tracking.model;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -20,5 +17,4 @@ public class URL extends Model {
 	@Column String description;
 	@Column(name="base_url", nullable=false) String baseURL;
 	@Column(name="extension_url", nullable=false) Integer extensionURL;
-	@OneToMany List<Hit> hits;
 }
