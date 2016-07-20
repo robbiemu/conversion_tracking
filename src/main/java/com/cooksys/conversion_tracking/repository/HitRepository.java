@@ -9,5 +9,6 @@ import com.cooksys.conversion_tracking.model.URL;
 
 public interface HitRepository extends JpaRepository<Hit, Long> {
 	List<Hit> findByUrl(URL url);
-	List<Hit> findByUrlAndYearGreaterThanEqualAndDayOfYearGreaterThanEqual(URL url, Integer year, Integer dayOfYear);	
+	List<Hit> findByUrlAndYear(URL url, Integer year);	
+	List<Hit> findByUrlAndYearAndDayOfYearGreaterThanEqual(URL url, Integer year, Integer dayOfYear);	
 }

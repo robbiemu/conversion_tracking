@@ -17,3 +17,7 @@ ul {
 .bold { font-weight: 900; }
 
 #prorata { margin-bottom: 1em; }
+
+#add_text {
+	margin-left: 0.5em;
+}

@@ -1,3 +1,14 @@
 #login {
 	margin-top: 1em;
 }
+#go_register {
+	font-size: 2em;
+	font-weight: 900;
+	text-decoration: none;
+	
+	display: inline-block;
+	margin-top: -0.3em;
+	-ms-transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
+	transform: rotate(180deg);
+}

@@ -7,7 +7,10 @@ angular.module(MODULE_NAME)
                 controller: 'HomeController',
                 controllerAs: 'homeController',
                 resolve: {
-                    factory: checkRouting
+                    factory: function ($q, $rootScope, $location, $http, Auth) {
+                    	let checkAdmin = false
+                    	checkRouting($q, $rootScope, $location, Auth, checkAdmin)
+                    }
                 }
             })
             .when('/admin', {
@@ -17,7 +20,8 @@ angular.module(MODULE_NAME)
                 resolve: {
                     factory: function ($q, $rootScope, $location, $http, Auth) {
                     	loadURLs($rootScope, $http)
-                    	checkRouting($q, $rootScope, $location, Auth)
+                    	let checkAdmin = true
+                    	checkRouting($q, $rootScope, $location, Auth, checkAdmin)
                     }
                 }
             })
@@ -26,12 +30,21 @@ angular.module(MODULE_NAME)
                 controller: 'UserController',
                 controllerAs: 'userController'
             })
+            .when('/register', {
+                templateUrl: REGISTER_PAGE,
+                controller: 'UserController',
+                controllerAs: 'userController'
+            })
+            .when('/register/:extension', {
+                templateUrl: REGISTER_PAGE,
+                controller: 'UserController',
+                controllerAs: 'userController'
+            })
            .when('/login/:extension', {
                 templateUrl: LOGIN_PAGE,
                 controller: 'UserController',
                 controllerAs: 'userController'
             })
-            .when('/register', { redirectTo: '/login' })
             .otherwise('/')
         }
    ])
@@ -49,10 +62,14 @@ const loadURLs = function ($rootScope, $http) {
 	})
 }
    
-const checkRouting = function ($q, $rootScope, $location, Auth) {
-        if (!Auth.isLoggedIn()) {
-            console.log(`${$location.path()} - route denied. User not logged in.`)
-            event.preventDefault()
-            $location.path('/login')
-        }
+const checkRouting = function ($q, $rootScope, $location, Auth, checkAdmin=false) {
+	let pass = true;
+	if (!Auth.isLoggedIn() || (checkAdmin && !Auth.isAdmin())) {
+        	pass = false
+	}
+	if(!pass) {
+	    console.log(`${$location.path()} - route denied. User not logged in or authorized.`)
+	    event.preventDefault()
+	    $location.path('/login')        	
+	}
 }

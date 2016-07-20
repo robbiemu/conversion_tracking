@@ -4,34 +4,68 @@ angular.module(MODULE_NAME).controller('AdminController',
 				let href = false
 				console.log("adminController")
 				console.log("considering css for " + $location.path())
-				switch($location.path()){
-//				case "/login":
-//					href = "styles/login.css"
-//			  	break
-				case "/admin":
-					href = "styles/admin.css"
-				} 
-				if(href){
-			  		$scope._style = document.createElement('link')
-			  		$scope._style.type = 'text/css'
-			  		$scope._style.href = href
-			  		$scope._style.rel = 'stylesheet'
-			
-			  		$scope._style = document.head.appendChild($scope._style)
-			
-			  		$scope.$on('$destroy', function() {
-			  			$scope._style.parentNode.removeChild($scope._style)
-			  			delete $scope._style
-			  		})
-			
+				if($location.path() ===  "/admin"){
+					style('styles/admin.css')
+					script(['scripts/bootstrap-select.js', 'scripts/jquery-confirm.js'])
 				}
 			})
 			
-		$scope.states = ['All Time', 'Weekly', 'Monthly', 'Yearly']
-		$scope.selection = 'All Time'
-		$scope.previous_selection = 'All Time'
+			const style = function(inp) {
+				let hrefs = []
+				if(typeof inp === 'string') {
+					hrefs.push(inp)
+				} else {
+					hrefs = inp
+				}
+				$scope._styles=[]
+				for(let i in hrefs){
+					console.log("styling page with " + hrefs[i])
+			  		let style = document.createElement('link')
+			  		style.type = 'text/css'
+			  		style.href = hrefs[i]
+			  		style.rel = 'stylesheet'
+			
+			  		$scope._styles.push( document.head.appendChild(style) )
+			
+			  		$scope.$on('$destroy', function() {
+						for (let key in $scope._styles){
+							$scope._styles[key].parentNode.removeChild(script)
+							delete $scope._styles[key]
+						}
+					})		
+				}
+			}
+		
+			const script = function(inp) {
+				let hrefs = []
+				if(typeof inp === 'string') {
+					hrefs.push(inp)
+				} else {
+					hrefs = inp
+				}
+				$scope._scripts=[]
+				for(let i in hrefs){
+					console.log("loading javascript: " + hrefs[i])
+					let script = document.createElement('script')
+					script.type = 'text/javascript'
+					script.src = hrefs[i]
+				
+					$scope._scripts.push( document.head.appendChild(script) )
+				
+					$scope.$on('$destroy', function() {
+						for (let key in $scope._scripts){
+							$scope._scripts[key].parentNode.removeChild(script)
+							delete $scope._scripts[key]
+						}
+					})							
+				}
+			}
+	
+			$scope.states = ['All Time', 'Weekly', 'Monthly', 'Yearly']
+			$scope.selection = 'All Time'
+			$scope.previous_selection = 'All Time'
 
-	    const reloadURLs = function(url) {
+			const reloadURLs = function(url) {
 				$http.get(url).then((tx_response) => {
 					if(tx_response.status == 200) {
 						$scope.URLs = []
@@ -44,14 +78,14 @@ angular.module(MODULE_NAME).controller('AdminController',
 				})									
 			}
 			
-		$scope.prorate = function() {
-			if(STATES[this.selection]) {
-				reloadURLs(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI + "/" + STATES[this.selection])
-			} else if($scope.previous_selection !== $scope.selection) {
-				reloadURLs(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI)
+			$scope.prorate = function() {
+				if(STATES[this.selection]) {
+					reloadURLs(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI + "/" + STATES[this.selection])
+				} else if($scope.previous_selection !== $scope.selection) {
+					reloadURLs(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI)
+				}
+				$scope.previous_selection = $scope.selection
 			}
-			$scope.previous_selection = $scope.selection
-		}
 			
 			var ctrl = this;
 			ctrl.path = $location.path()

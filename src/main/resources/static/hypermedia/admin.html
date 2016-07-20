@@ -23,7 +23,7 @@
         <h1>New URLs</h1>
         <ul class="outlined col-sm-8">
           <li>
-            <span id="new_url_button" class="glyphicon glyphicon-plus" aria-hidden="true"><i class='"input_new_url invert_visibility"'>add new record</i></span>
+            <span id="new_url_button" class="glyphicon glyphicon-plus" aria-hidden="true"></span><i id="add_text" class="input_new_url invert_visibility">add new record</i>
             <form id="input_new_url" class="input_new_url form-horizontal" ng-submit="new_url()">
               <div class="form-group">
                 <label for="label" class="input_new_url control-label col-sm-2">Label</label>
@@ -47,7 +47,7 @@
             </form>
           </li>
           <div ng-repeat="url in URLs">
-            <li><span id="url_button_{{url.label}}" class="delete_url_button glyphicon glyphicon-remove red"ng-click="delete(url.label)" aria-hidden="true"></span><code>{{url.baseURL}}/{{url.extensionURL}}</code> - <span class="bold">{{url.label}}</span> - {{url.description}}</li>
+            <li><span id="url_button_{{url.label}}" class="delete_url_button glyphicon glyphicon-remove red" ng-click="delete(url.label)" aria-hidden="true"></span><code><a href="#{{url.baseURL}}/{{url.extensionURL}}">{{url.baseURL}}/{{url.extensionURL}}</a></code> - <span class="bold">{{url.label}}</span> - {{url.description}}</li>
           </div>
         </ul>
       </div>
@@ -59,7 +59,7 @@
 			</select>
         </div>
         <ul class="outlined col-sm-8" ng-repeat="url in URLs">
-            <li><span class="big bold">{{url.anonymousCount}}</span><code>{{url.baseURL}}/{{url.extensionURL}}</code> - <span class="bold">{{url.label}}</span> - {{url.description}}</li>
+            <li><span class="big bold">{{url.anonymousCount}}</span><code><a href="#{{url.baseURL}}/{{url.extensionURL}}">{{url.baseURL}}/{{url.extensionURL}}</a></code> - <span class="bold">{{url.label}}</span> - {{url.description}}</li>
           </ul>
       </div>
     </div>
@@ -69,10 +69,16 @@
       $('.input_new_url').not('.invert_visibility').toggle()
       $('.input_new_url #cancel').click(() =>{
           $('input.input_new_url:text').val("")
-          $('.input_new_url').toggle()
+          $('.input_new_url').not('.invert_visibility').slideUp()
+          $('.input_new_url.invert_visibility').toggle()
         })
         $('#new_url_button').click(() => {
-          $('.input_new_url').toggle()
+          	$('.input_new_url.invert_visibility').toggle()
+            if( $('.input_new_url').is(':visible') ) {
+                $('.input_new_url').not('.invert_visibility').slideUp()
+            } else {
+                $('.input_new_url').not('.invert_visibility').slideDown()
+          	}
         })
         
       $('#admin_outer #tabs a').click(() => {

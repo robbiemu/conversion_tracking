@@ -38,7 +38,6 @@ public class UrlService {
 		if(u == null) {
 			throw new InvalidDataAccessApiUsageException("Url with label must exist in database!");
 		}
-
 		
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(new Date()); // Give your own date
@@ -46,10 +45,11 @@ public class UrlService {
 		Integer year = cal.get(Calendar.YEAR);
 		
 		for(Hit h: hr.findByUrl(u)) {
-			if((h.getDayOfYear() == doy) && (h.getYear() == year)) {
+			if((h.getDayOfYear().equals(doy)) && (h.getYear().equals(year))) {
 				h.increment();
 				hr.save(h);
 				txr.setField(true);
+				break;
 			}
 		}
 
@@ -78,7 +78,7 @@ public class UrlService {
 		Integer year = cal.get(Calendar.YEAR);
 		
 		for(Hit h: hr.findByUrl(u)) {
-			if((h.getDayOfYear() == doy) && (h.getYear() == year)) {
+			if((h.getDayOfYear().equals(doy)) && (h.getYear().equals(year))) {
 				h.decrement();
 				hr.save(h);
 				txr.setField(true);
@@ -156,8 +156,17 @@ public class UrlService {
 		}
 		
 		Long total = 0L;
-		for(Hit h: hr.findByUrlAndYearGreaterThanEqualAndDayOfYearGreaterThanEqual(u, year, doy)){
-			total += h.getAnonymousCount();
+		if(year < cal.get(Calendar.YEAR)){
+			for(Hit h: hr.findByUrlAndYear(u, cal.get(Calendar.YEAR))){
+				total += h.getAnonymousCount();
+			}
+			for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
+				total += h.getAnonymousCount();
+			}		
+		} else {
+			for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
+				total += h.getAnonymousCount();
+			}			
 		}
 		txr.setField(total);
 		return txr;
@@ -211,8 +220,17 @@ public class UrlService {
 		
 		for(URL u: ur.findAll()) {
 			Long total = 0L;
-			for(Hit h: hr.findByUrlAndYearGreaterThanEqualAndDayOfYearGreaterThanEqual(u, year, doy)){
-				total += h.getAnonymousCount();
+			if(year < cal.get(Calendar.YEAR)){
+				for(Hit h: hr.findByUrlAndYear(u, cal.get(Calendar.YEAR))){
+					total += h.getAnonymousCount();
+				}
+				for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
+					total += h.getAnonymousCount();
+				}		
+			} else {
+				for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
+					total += h.getAnonymousCount();
+				}			
 			}
 			l.add(new Tuple<Long, URL>(total, u));
 		}

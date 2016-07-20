@@ -8,10 +8,12 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.conversion_tracking.model.Area;
+import com.cooksys.conversion_tracking.model.Hit;
 import com.cooksys.conversion_tracking.model.Location;
 import com.cooksys.conversion_tracking.model.URL;
 import com.cooksys.conversion_tracking.model.User;
 import com.cooksys.conversion_tracking.repository.AreaRepository;
+import com.cooksys.conversion_tracking.repository.HitRepository;
 import com.cooksys.conversion_tracking.repository.LocationRepository;
 import com.cooksys.conversion_tracking.repository.UrlRepository;
 import com.cooksys.conversion_tracking.repository.UserRepository;
@@ -34,6 +36,9 @@ public class AdministrativeService {
 	
 	@Autowired
 	UrlRepository urlr;
+	
+	@Autowired
+	HitRepository hr;
 	
 	public Location readLocation(Long pk) {
 		return lr.findOne(pk);
@@ -84,7 +89,7 @@ public class AdministrativeService {
 		if (u != null){
 			throw new DataIntegrityViolationException("User with username already exists!");
 		}
-		
+				
 		u = new User();
 		u.setVersion(USER_TABLE_VERSION);
 		u.setName(long_tx.getUsername());
