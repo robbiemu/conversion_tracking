@@ -25,6 +25,9 @@ angular.module(MODULE_NAME).controller('UserController',
 			if(/^\/login/.test($location.path())){
 				style("styles/login.css")
 			}
+			if(/^\/register/.test($location.path())){
+				style("styles/register.css")
+			}
 		})
 		
 		const style = function(href) {
