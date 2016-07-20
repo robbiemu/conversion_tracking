@@ -12,3 +12,4 @@ const SPRING_FINDURL_URI = '/url/find'
 const SPRING_DELETEBYLABELURL_URI = '/url/label'
 const SPRING_INCREMENT_ANONYMOUS_URI = '/url/increment'
 	
+const STATES = { "All Time": undefined, "Weekly": "weekly", "Monthly": "monthly", "Yearly": "yearly" }

@@ -6,7 +6,7 @@
   </div>
   <div class="col-sm-12 subotron">
     <label for="base_url">BASE URL</label>
-    <input id="basedir" type="text" ng-model="homeController.path" readonly />
+    <input id="basedir" type="text" ng-model="adminController.path" readonly />
   </div>
   <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
     <li class="active"><a href="#home" data-toggle="tab">home</a></li>
@@ -23,7 +23,7 @@
         <h1>New URLs</h1>
         <ul class="outlined col-sm-8">
           <li>
-            <span id="new_url_button" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            <span id="new_url_button" class="glyphicon glyphicon-plus" aria-hidden="true"><i class='"input_new_url invert_visibility"'>add new record</i></span>
             <form id="input_new_url" class="input_new_url form-horizontal" ng-submit="new_url()">
               <div class="form-group">
                 <label for="label" class="input_new_url control-label col-sm-2">Label</label>
@@ -53,6 +53,11 @@
       </div>
       <div class="tab-pane" id="labelsAndHits">
         <h1>Hits</h1>
+        <div class="col-sm-offset-6 col-sm-1">
+			<select id="prorata" class="selectpicker btn-lg btn-success" ng-model="selection" ng-change="prorate()">
+				<option class="btn-secondary-outlined" ng-repeat="state in states">{{state}}</option>
+			</select>
+        </div>
         <ul class="outlined col-sm-8" ng-repeat="url in URLs">
             <li><span class="big bold">{{url.anonymousCount}}</span><code>{{url.baseURL}}/{{url.extensionURL}}</code> - <span class="bold">{{url.label}}</span> - {{url.description}}</li>
           </ul>
@@ -61,18 +66,20 @@
   </div>
   <script type="text/javascript">
     jQuery(document).ready(function($) {
-      $('.input_new_url').hide();
+      $('.input_new_url').not('.invert_visibility').toggle()
+      $('.input_new_url #cancel').click(() =>{
+          $('input.input_new_url:text').val("")
+          $('.input_new_url').toggle()
+        })
+        $('#new_url_button').click(() => {
+          $('.input_new_url').toggle()
+        })
+        
       $('#admin_outer #tabs a').click(() => {
         event.preventDefault()
       })
-      $('.input_new_url #cancel').click(() =>{
-        $('input.input_new_url:text').val("")
-        $('.input_new_url').hide();
-      })
-      $('#new_url_button').click(() => {
-        $('.input_new_url').show()
-      })
       $('#tabs').tab()
+      
     });
   </script>
 </div>

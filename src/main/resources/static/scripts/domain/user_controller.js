@@ -21,28 +21,41 @@ angular.module(MODULE_NAME).controller('UserController',
 			let href = false
 			console.log("userController")
 			console.log("considering css for " + $location.path())
-			switch($location.path()){
-			case "/login":
-				href = "styles/login.css"
-//		  	break
-//			case "/admin":
-//				href = "styles/admin.css"
-			} 
-			if(href){
-				console.log("styling page with " + href)
-		  		$scope._style = document.createElement('link')
-		  		$scope._style.type = 'text/css'
-		  		$scope._style.href = href
-		  		$scope._style.rel = 'stylesheet'
-		
-		  		$scope._style = document.head.appendChild($scope._style)
-		
-		  		$scope.$on('$destroy', function() {
-		  			$scope._style.parentNode.removeChild($scope._style)
-		  			delete $scope._style
-		  		})		
-			}  
+			if(/^\/login/.test($location.path())){
+				style("styles/login.css")
+				script("scripts/bootstrap-select.js")
+			}
 		})
+
+		const style = function(href) {
+			console.log("styling page with " + href)
+	  		$scope._style = document.createElement('link')
+	  		$scope._style.type = 'text/css'
+	  		$scope._style.href = href
+	  		$scope._style.rel = 'stylesheet'
+	
+	  		$scope._style = document.head.appendChild($scope._style)
+	
+	  		$scope.$on('$destroy', function() {
+	  			$scope._style.parentNode.removeChild($scope._style)
+	  			delete $scope._style
+	  		})		
+		}
+		
+		const script = function(href) {
+			console.log("loading styleing javascript: " + href)
+	  		$scope._script = document.createElement('script')
+	  		$scope._script.type = 'text/javascript'
+	  		$scope._script.src = href
+	
+	  		$scope._script = document.head.appendChild($scope._script)
+	
+	  		$scope.$on('$destroy', function() {
+	  			$scope._script.parentNode.removeChild($scope._script)
+	  			delete $scope._script
+	  		})		
+			
+		}
 		
 		$scope.login = function () {
 		    $http.post(SPRING_LOGIN_URI, $scope.user).then((tx_response) => {

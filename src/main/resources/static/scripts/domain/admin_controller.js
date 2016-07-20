@@ -2,7 +2,7 @@ angular.module(MODULE_NAME).controller('AdminController',
 		['$scope', '$location', '$http', function ($scope, $location, $http) {
 			$scope.$on('$viewContentLoaded', function() {
 				let href = false
-				console.log("home controller")
+				console.log("adminController")
 				console.log("considering css for " + $location.path())
 				switch($location.path()){
 //				case "/login":
@@ -26,6 +26,32 @@ angular.module(MODULE_NAME).controller('AdminController',
 			
 				}
 			})
+			
+		$scope.states = ['All Time', 'Weekly', 'Monthly', 'Yearly']
+		$scope.selection = 'All Time'
+		$scope.previous_selection = 'All Time'
+
+	    const reloadURLs = function(url) {
+				$http.get(url).then((tx_response) => {
+					if(tx_response.status == 200) {
+						$scope.URLs = []
+						for(let e in tx_response.data.field){
+							let url = tx_response.data.field[e].right
+							url.anonymousCount = tx_response.data.field[e].left
+							$scope.URLs.push(url)
+						}
+					}
+				})									
+			}
+			
+		$scope.prorate = function() {
+			if(STATES[this.selection]) {
+				reloadURLs(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI + "/" + STATES[this.selection])
+			} else if($scope.previous_selection !== $scope.selection) {
+				reloadURLs(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI)
+			}
+			$scope.previous_selection = $scope.selection
+		}
 			
 			var ctrl = this;
 			ctrl.path = $location.path()
