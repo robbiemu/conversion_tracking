@@ -60,6 +60,7 @@
         </div>
         <ul class="outlined col-sm-8">
             <li ng-repeat="url in URLs">
+            	<div id="graph_{{url.num}}"></div>
             	<span class="big bold">{{url.conversionRate}}%</span> 
             	<div class="lineitem">
             	{{url.conversions}}&nbsp;

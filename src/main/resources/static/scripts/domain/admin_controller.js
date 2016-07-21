@@ -26,10 +26,42 @@ angular.module(MODULE_NAME).controller('AdminController',
 							url.anonymousCount = tx_response.data.field[e].left[0]
 							url.conversions = tx_response.data.field[e].left[1]
 							url.conversionRate = tx_response.data.field[e].left[2]
+							url.num= e
 							
 							$http.get('/url/tracking/' + degree).then((r) => {
 								if(r.status == 200){
-									console.dir(r.data)									
+									for(let i in r.data) {
+										let anon = {
+												x: r.data[i][0],
+												y: r.data[i][1],
+												name: 'anonymous',
+												type: 'scatter'
+										}
+										let regis = {
+												x: r.data[i][0],
+												y: r.data[i][2],
+												name: 'registered',
+												type: 'scatter'
+										}
+										let conv = {
+												x: r.data[i][0],
+												y: r.data[i][2],
+												name: 'coversion rate',
+												type: 'scatter'
+										}
+										let layout = {
+												xaxis: {
+													title: degree
+												},
+												yaxis: {
+													title: 'Hits'
+												},
+												margin: { t: 0 }
+											};
+										Plotly.newPlot('graph_' + e, [anon, regis, conv], layout)
+										
+
+									}
 								}
 							})
 

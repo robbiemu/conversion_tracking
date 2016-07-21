@@ -375,12 +375,13 @@ public class UrlService {
 		Long step = iterate;
 		while(iterate <= max){
 			List<Long> ll = new ArrayList<>();
-			ll.add(iterate);
-			ll.add(Integer.toUnsignedLong(r.nextInt(30)));
-			ll.add(Integer.toUnsignedLong(r.nextInt(20)));
-			ll.add(Integer.toUnsignedLong(r.nextInt(10)));
+			ll.add(iterate); 
+			ll.add(Integer.toUnsignedLong(r.nextInt((int)(30*step))));
+			ll.add(Integer.toUnsignedLong(r.nextInt((int)(20*step))));
+			ll.add(Integer.toUnsignedLong(r.nextInt((int)(10*step))));
 
 			lll.add(ll);
+			iterate += step;
 		}
 		TXResponse<List<List<Long>>> txr = new TXResponse("URL Tracking ProRatum");
 		txr.setField(lll);
