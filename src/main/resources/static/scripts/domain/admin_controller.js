@@ -6,7 +6,7 @@ angular.module(MODULE_NAME).controller('AdminController',
 				console.log("considering css for " + $location.path())
 				if($location.path() ===  "/admin"){
 					style('styles/admin.css')
-					script(['scripts/bootstrap-select.js', 'scripts/jquery-confirm.js'])
+					script(['scripts/node_modules/bootstrap-select/js/bootstrap-select.js', 'scripts/node_modules/jquery-confirm/js/jquery-confirm.js', 'scripts/admin.js'])
 				}
 			})
 			
@@ -25,14 +25,19 @@ angular.module(MODULE_NAME).controller('AdminController',
 			  		style.href = hrefs[i]
 			  		style.rel = 'stylesheet'
 			
+					if($scope._rawStyles === undefined) {
+						$scope._rawStyles = []
+					}
+					$scope._rawStyles.push(script)
 			  		$scope._styles.push( document.head.appendChild(style) )
 			
-			  		$scope.$on('$destroy', function() {
+					$scope.$on('$destroy', function() {
 						for (let key in $scope._styles){
-							$scope._styles[key].parentNode.removeChild(script)
+							$scope._styles[key].parentNode.removeChild($scope._rawStyles[key])
 							delete $scope._styles[key]
+							delete $scope._rawStyles[key]
 						}
-					})		
+					})			
 				}
 			}
 		
@@ -50,12 +55,17 @@ angular.module(MODULE_NAME).controller('AdminController',
 					script.type = 'text/javascript'
 					script.src = hrefs[i]
 				
+					if($scope._rawScripts === undefined) {
+						$scope._rawScripts = []
+					}
+					$scope._rawScripts.push(script)
 					$scope._scripts.push( document.head.appendChild(script) )
 				
 					$scope.$on('$destroy', function() {
 						for (let key in $scope._scripts){
-							$scope._scripts[key].parentNode.removeChild(script)
+							$scope._scripts[key].parentNode.removeChild($scope._rawScripts[key])
 							delete $scope._scripts[key]
+							delete $scope._rawScripts[key]
 						}
 					})							
 				}
@@ -71,7 +81,9 @@ angular.module(MODULE_NAME).controller('AdminController',
 						$scope.URLs = []
 						for(let e in tx_response.data.field){
 							let url = tx_response.data.field[e].right
-							url.anonymousCount = tx_response.data.field[e].left
+							url.anonymousCount = tx_response.data.field[e].left[0]
+							url.conversions = tx_response.data.field[e].left[1]
+							url.conversionRate = tx_response.data.field[e].left[2]
 							$scope.URLs.push(url)
 						}
 					}
@@ -80,9 +92,9 @@ angular.module(MODULE_NAME).controller('AdminController',
 			
 			$scope.prorate = function() {
 				if(STATES[this.selection]) {
-					reloadURLs(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI + "/" + STATES[this.selection])
+					reloadURLs(SPRING_TRACKING_DETAILS_URI + "/" + STATES[this.selection])
 				} else if($scope.previous_selection !== $scope.selection) {
-					reloadURLs(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI)
+					reloadURLs(SPRING_TRACKING_DETAILS_URI)
 				}
 				$scope.previous_selection = $scope.selection
 			}

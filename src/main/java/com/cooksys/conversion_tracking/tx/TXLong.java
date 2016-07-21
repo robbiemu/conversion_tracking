@@ -9,5 +9,7 @@ public class TXLong {
 	String username;
 	String password;
 	Integer num;
+	String label;
 	Boolean admin;
+	
 }

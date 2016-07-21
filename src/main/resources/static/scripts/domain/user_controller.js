@@ -30,35 +30,67 @@ angular.module(MODULE_NAME).controller('UserController',
 			}
 		})
 		
-		const style = function(href) {
-			console.log("styling page with " + href)
-	  		$scope._style = document.createElement('link')
-	  		$scope._style.type = 'text/css'
-	  		$scope._style.href = href
-	  		$scope._style.rel = 'stylesheet'
-	
-	  		$scope._style = document.head.appendChild($scope._style)
-	
-	  		$scope.$on('$destroy', function() {
-	  			$scope._style.parentNode.removeChild($scope._style)
-	  			delete $scope._style
-	  		})		
-		}
-		
-		const script = function(href) {
-			console.log("loading styleing javascript: " + href)
-	  		$scope._script = document.createElement('script')
-	  		$scope._script.type = 'text/javascript'
-	  		$scope._script.src = href
-	
-	  		$scope._script = document.head.appendChild($scope._script)
-	
-	  		$scope.$on('$destroy', function() {
-	  			$scope._script.parentNode.removeChild($scope._script)
-	  			delete $scope._script
-	  		})		
+			const style = function(inp) {
+				let hrefs = []
+				if(typeof inp === 'string') {
+					hrefs.push(inp)
+				} else {
+					hrefs = inp
+				}
+				$scope._styles=[]
+				for(let i in hrefs){
+					console.log("styling page with " + hrefs[i])
+			  		let style = document.createElement('link')
+			  		style.type = 'text/css'
+			  		style.href = hrefs[i]
+			  		style.rel = 'stylesheet'
 			
-		}
+					if($scope._rawStyles === undefined) {
+						$scope._rawStyles = []
+					}
+					$scope._rawStyles.push(script)
+			  		$scope._styles.push( document.head.appendChild(style) )
+			
+					$scope.$on('$destroy', function() {
+						for (let key in $scope._styles){
+							$scope._styles[key].parentNode.removeChild($scope._rawStyles[key])
+							delete $scope._styles[key]
+							delete $scope._rawStyles[key]
+						}
+					})			
+				}
+			}
+		
+			const script = function(inp) {
+				let hrefs = []
+				if(typeof inp === 'string') {
+					hrefs.push(inp)
+				} else {
+					hrefs = inp
+				}
+				$scope._scripts=[]
+				for(let i in hrefs){
+					console.log("loading javascript: " + hrefs[i])
+					let script = document.createElement('script')
+					script.type = 'text/javascript'
+					script.src = hrefs[i]
+				
+					if($scope._rawScripts === undefined) {
+						$scope._rawScripts = []
+					}
+					$scope._rawScripts.push(script)
+					$scope._scripts.push( document.head.appendChild(script) )
+					
+					$scope.$on('$destroy', function() {
+						for (let key in $scope._scripts){
+							$scope._scripts[key].parentNode.removeChild($scope._rawScripts[key])
+							delete $scope._scripts[key]
+							delete $scope._rawScripts[key]
+						}
+					})							
+				}
+			}
+
 		
 		$scope.login = function () {
 		    $http.post(SPRING_LOGIN_URI, $scope.user).then((tx_response) => {
@@ -67,7 +99,6 @@ angular.module(MODULE_NAME).controller('UserController',
 		    		Auth.setUser($scope.user)
 		        	$http.post(SPRING_FINDURL_URI, { baseURL: '/login', extensionURL: $routeParams.extension } )
 						.then((inner_tx_response) => {
-							console.dir(inner_tx_response)
 							if(inner_tx_response.status == 200 && inner_tx_response.data.label !== undefined) {
 								$http.post(SPRING_DECREMENT_ANONYMOUS_URI,  { label: inner_tx_response.data.label})
 							}
@@ -79,7 +110,9 @@ angular.module(MODULE_NAME).controller('UserController',
 		
 		$scope.register = function () { // for the moment, the assumption is /register/:extension calls are coming from /login/:extension
 			user = $scope.user
-			user.area="1"
+			user.num=1
+			user.label=$scope.label
+			console.dir(user)
 		    $http.post(SPRING_REGISTER_URI, user).then((tx_response) => {
 		    	if (tx_response.status == 200) {
 		        	Auth.setUser($scope.user)

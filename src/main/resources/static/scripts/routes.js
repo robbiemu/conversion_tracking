@@ -19,7 +19,7 @@ angular.module(MODULE_NAME)
                 controllerAs: 'adminController',
                 resolve: {
                     factory: function ($q, $rootScope, $location, $http, Auth) {
-                    	loadURLs($rootScope, $http)
+                    	loadTrackingDetails($rootScope, $http)
                     	let checkAdmin = true
                     	checkRouting($q, $rootScope, $location, Auth, checkAdmin)
                     }
@@ -63,13 +63,15 @@ angular.module(MODULE_NAME)
 	}) 
 }
    
-const loadURLs = function ($rootScope, $http) {
-	$http.get(SPRING_LISTURLS_WITH_ANONYMOUSHITS_URI).then((tx_response) => {
+const loadTrackingDetails = function ($rootScope, $http) {
+	$http.get(SPRING_TRACKING_DETAILS_URI).then((tx_response) => {
 		if(tx_response.status == 200) {
 			$rootScope.URLs = []
 			for(let e in tx_response.data.field){
 				let url = tx_response.data.field[e].right
-				url.anonymousCount = tx_response.data.field[e].left
+				url.anonymousCount = tx_response.data.field[e].left[0]
+				url.conversions = tx_response.data.field[e].left[1]
+				url.conversionRate = tx_response.data.field[e].left[2]
 				$rootScope.URLs.push(url)
 			}
 		}

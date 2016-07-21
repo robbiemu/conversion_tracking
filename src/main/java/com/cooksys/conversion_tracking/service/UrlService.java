@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import com.cooksys.conversion_tracking.Tuple;
 import com.cooksys.conversion_tracking.model.Hit;
 import com.cooksys.conversion_tracking.model.URL;
+import com.cooksys.conversion_tracking.model.User;
 import com.cooksys.conversion_tracking.repository.HitRepository;
 import com.cooksys.conversion_tracking.repository.UrlRepository;
+import com.cooksys.conversion_tracking.repository.UserRepository;
 import com.cooksys.conversion_tracking.tx.TXResponse;
 import com.cooksys.conversion_tracking.tx.TXURLbyURL;
 import com.cooksys.conversion_tracking.tx.TXURLshort;
@@ -30,6 +32,9 @@ public class UrlService {
 	
 	@Autowired 
 	HitRepository hr;
+	
+	@Autowired
+	UserRepository userr;
 		
 	public TXResponse<Boolean> increment(TXURLshort short_tx) {
 		TXResponse<Boolean> txr = new TXResponse<>("URL tracking for url:label '"+short_tx.getLabel()+"' incrementation");
@@ -238,4 +243,111 @@ public class UrlService {
 		return txr;
 	}
 
+	public TXResponse<List<Tuple<List<Long>, URL>>> readURLsWithTracking() {
+		TXResponse<List<Tuple<List<Long>, URL>>> txr = new TXResponse<>("URLs with Tracking");
+		List<Tuple<List<Long>, URL>> l = new ArrayList<>();
+		
+		for(URL u: ur.findAll()) {
+			Long anonymousTotal = 0L;
+			Long registeredTotal = 0L;
+			for(Hit h: hr.findByUrl(u)){
+				anonymousTotal += h.getAnonymousCount();
+				registeredTotal += h.getRegisteredCount();
+			}
+			Long total = anonymousTotal + registeredTotal;
+			Long conversions = userr.countByUrl(u);
+			Long conversionRate = null;
+			if(total == 0) {
+				conversionRate = 0L;
+			} else {
+				Double d = 100 * (conversions/(anonymousTotal*1D));
+				conversionRate = d.longValue();
+			}
+			
+			List<Long> trackingDetails = new ArrayList<>();
+			trackingDetails.add(anonymousTotal);
+			trackingDetails.add(conversions);
+			trackingDetails.add(conversionRate);
+			l.add(new Tuple<List<Long>, URL>(trackingDetails, u));
+		}
+		txr.setField(l);
+		return txr;
+	}
+
+	public TXResponse<List<Tuple<List<Long>, URL>>> readURLsWithTrackingProRatum(String proratum) {
+		TXResponse<List<Tuple<List<Long>, URL>>> txr = new TXResponse<>("URLs with Tracking");
+		List<Tuple<List<Long>, URL>> l = new ArrayList<>();
+
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(new Date()); // Give your own date
+		Integer doy = cal.get(Calendar.DAY_OF_YEAR);
+		Integer year = cal.get(Calendar.YEAR);
+		
+		switch (proratum) {
+			case PRORATUM_WEEKLY:
+				if(doy < 7) {
+					year -= 1;
+					doy += 365;
+				}
+				doy -= 7;
+				break;
+			case PRORATUM_MONTHLY:
+				if(doy < 30) {
+					year -= 1;
+					doy += 365;
+				}
+				doy -= 30;
+				break;
+			case PRORATUM_YEARLY:
+				year -= 1;
+				break;
+			default:
+				throw new InvalidDataAccessApiUsageException("Illegal pro-ratum for search time.");
+		}
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_YEAR, doy);
+		calendar.set(Calendar.YEAR, year);
+		Date fromDate = new Date(calendar.getTimeInMillis());
+
+		
+		for(URL u: ur.findAll()) {
+			Long anonymousTotal = 0L;
+			Long registeredTotal = 0L;
+			if(year < cal.get(Calendar.YEAR)){
+				for(Hit h: hr.findByUrlAndYear(u, cal.get(Calendar.YEAR))){
+					anonymousTotal += h.getAnonymousCount();
+					registeredTotal += h.getRegisteredCount();
+				}
+				for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
+					anonymousTotal += h.getAnonymousCount();
+					registeredTotal += h.getRegisteredCount();
+				}		
+			} else {
+				for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
+					anonymousTotal += h.getAnonymousCount();
+					registeredTotal += h.getRegisteredCount();
+				}			
+			}
+			Long total = anonymousTotal + registeredTotal;
+			Long conversions = userr.countByUrlAndLastUpdatedBetween(u, fromDate, new Date());
+			Long conversionRate = null;
+			if(total == 0) {
+				conversionRate = 0L;
+			} else {
+				Double d = 100 * (conversions/(anonymousTotal*1D));
+				conversionRate = d.longValue();
+			}
+			
+			List<Long> trackingDetails = new ArrayList<>();
+			trackingDetails.add(anonymousTotal);
+			trackingDetails.add(conversions);
+			trackingDetails.add(conversionRate);
+			l.add(new Tuple<List<Long>, URL>(trackingDetails, u));
+		}
+		txr.setField(l);
+		return txr;
+	}
+	
+	
 }

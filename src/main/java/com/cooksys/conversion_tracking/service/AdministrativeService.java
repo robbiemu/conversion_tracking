@@ -80,7 +80,9 @@ public class AdministrativeService {
 	}
 	
 	public User createUser(TXLong long_tx) {
+		System.out.println(long_tx.toString());
 		Area a = ar.findOneByNum(long_tx.getNum());
+		URL url = urlr.findOneByLabel(long_tx.getLabel()); 
 		
 		User u = ur.findOneByName(long_tx.getUsername()); // ensure we aren't going to create a record with a null username
 		if (long_tx.getUsername() == null) {
@@ -95,6 +97,7 @@ public class AdministrativeService {
 		u.setName(long_tx.getUsername());
 		u.setPassword(long_tx.getPassword());
 		u.setArea(a);
+		u.setUrl(url);
 		u.setAdminRights(long_tx.getAdmin());
 		ur.save(u);
 

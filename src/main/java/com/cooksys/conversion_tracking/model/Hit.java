@@ -21,7 +21,8 @@ import lombok.EqualsAndHashCode;
 public class Hit extends Model {
 	@Column(name="day_of_year") Integer dayOfYear;
 	@Column Integer year;
-	@Column Long anonymousCount;
+	@Column Long anonymousCount=0L;
+	@Column Long registeredCount=0L;
 	@JsonIgnore @ManyToOne URL url;
 	
 	public Hit(){
@@ -37,6 +38,7 @@ public class Hit extends Model {
 	}
 
 	public Long decrement() {
+		++registeredCount;
 		return --anonymousCount;
 	}
 }

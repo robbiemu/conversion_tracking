@@ -59,33 +59,18 @@
 			</select>
         </div>
         <ul class="outlined col-sm-8">
-            <li ng-repeat="url in URLs"><span class="big bold">{{url.anonymousCount}}</span><div class="lineitem"><code><a href="#{{url.baseURL}}/{{url.extensionURL}}">{{url.baseURL}}/{{url.extensionURL}}</a></code> - <span class="bold">{{url.label}}</span> - {{url.description}}</div></li>
+            <li ng-repeat="url in URLs">
+            	<span class="big bold">{{url.conversionRate}}%</span> 
+            	<div class="lineitem">
+            	{{url.conversions}}&nbsp;
+            	{{url.anonymousCount}} 
+            	<code><a href="#{{url.baseURL}}/{{url.extensionURL}}">{{url.baseURL}}/{{url.extensionURL}}</a></code>
+            	 - <span class="bold">{{url.label}}</span>
+            	  - {{url.description}}
+            	 </div>
+            </li>
           </ul>
       </div>
     </div>
   </div>
-  <script type="text/javascript">
-    jQuery(document).ready(function($) {
-      $('.input_new_url').not('.invert_visibility').toggle()
-      $('.input_new_url #cancel').click(() =>{
-          $('input.input_new_url:text').val("")
-          $('.input_new_url').not('.invert_visibility').slideUp()
-          $('.input_new_url.invert_visibility').toggle()
-        })
-        $('#new_url_button').click(() => {
-          	$('.input_new_url.invert_visibility').toggle()
-            if( $('.input_new_url').is(':visible') ) {
-                $('.input_new_url').not('.invert_visibility').slideUp()
-            } else {
-                $('.input_new_url').not('.invert_visibility').slideDown()
-          	}
-        })
-        
-      $('#admin_outer #tabs a').click(() => {
-        event.preventDefault()
-      })
-      $('#tabs').tab()
-      
-    });
-  </script>
 </div>

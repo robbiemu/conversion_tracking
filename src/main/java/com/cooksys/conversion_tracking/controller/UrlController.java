@@ -23,6 +23,16 @@ import com.cooksys.conversion_tracking.tx.TXURLshort;
 public class UrlController {
 	@Autowired
 	UrlService us;
+
+	@RequestMapping("/urls/and/tracking")
+	public TXResponse<List<Tuple<List<Long>, URL>>> getURLsWithTracking() {
+		return us.readURLsWithTracking();
+	}	
+
+	@RequestMapping("/urls/and/tracking/{proratum}")
+	public TXResponse<List<Tuple<List<Long>, URL>>> getURLsWithTrackingProRatum(@PathVariable String proratum) {
+		return us.readURLsWithTrackingProRatum(proratum);
+	}		
 	
 	@RequestMapping("/urls/and/hits")
 	public TXResponse<List<Tuple<Long, URL>>> getURLsWithHits() {
