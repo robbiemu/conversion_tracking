@@ -8,8 +8,8 @@ angular.module(MODULE_NAME).controller('AdminController',
 				console.log("adminController")
 				console.log("considering css for " + $location.path())
 				if($location.path() ===  "/admin"){
-					Res.style('styles/admin.css')
-					Res.script(['scripts/bootstrap-select.js', 'scripts/jquery-confirm.js', 'scripts/admin.js'])
+					Res.style(['scripts/node_modules/n3-charts/build/LineChart.css', 'scripts/node_modules/jquery-confirm/css/jquery-confirm.css', 'styles/admin.css'])
+					Res.script(['scripts/node_modules/n3-charts/build/LineChart.js', 'scripts/node_modules/jquery-confirm/js/jquery-confirm.js', 'scripts/admin.js'])
 				}
 			})
 	
@@ -17,8 +17,8 @@ angular.module(MODULE_NAME).controller('AdminController',
 			$scope.selection = 'All Time'
 			$scope.previous_selection = 'All Time'
 
-			const reloadURLs = function(url) {
-				$http.get(url).then((tx_response) => {
+			const reloadURLs = function(url, degree) {
+				$http.get(url + '/' + degree).then((tx_response) => {
 					if(tx_response.status == 200) {
 						$scope.URLs = []
 						for(let e in tx_response.data.field){
@@ -26,15 +26,22 @@ angular.module(MODULE_NAME).controller('AdminController',
 							url.anonymousCount = tx_response.data.field[e].left[0]
 							url.conversions = tx_response.data.field[e].left[1]
 							url.conversionRate = tx_response.data.field[e].left[2]
+							
+							$http.get('/url/tracking/' + degree).then((r) => {
+								if(r.status == 200){
+									console.dir(r.data)									
+								}
+							})
+
 							$scope.URLs.push(url)
 						}
 					}
 				})									
 			}
-			
+						
 			$scope.prorate = function() {
 				if(STATES[this.selection]) {
-					reloadURLs(SPRING_TRACKING_DETAILS_URI + "/" + STATES[this.selection])
+					reloadURLs(SPRING_TRACKING_DETAILS_URI, STATES[this.selection])
 				} else if($scope.previous_selection !== $scope.selection) {
 					reloadURLs(SPRING_TRACKING_DETAILS_URI)
 				}
@@ -51,6 +58,7 @@ angular.module(MODULE_NAME).controller('AdminController',
 			    		let url = tx_response.data
 			    		url.anonymousCount = 0
 			    		$scope.URLs.push(url)
+			    		decorateURLs()
 			    	} else {
 			    		// failure
 			    	}
@@ -58,6 +66,18 @@ angular.module(MODULE_NAME).controller('AdminController',
 			}
 			
 			$scope.delete = function (label) {
+		       	$.confirm({
+		       		title: 'Delete the label?',
+		       		content: 'Are you sure you want to delete the label?',
+		       		confirm: function(){
+						$http.get(SPRING_DELETEBYLABELURL_URI + "/" + label).then((tx_response) => {
+							if(tx_response.status == 200) {
+								$scope.URLs = $scope.URLs.filter((x) => x.label !== label)
+							}					
+						})
+					}
+		       	})
+
 /*				tx_short = { '"label"': label }
 				params = {
 						  method: 'DELETE',
@@ -66,11 +86,7 @@ angular.module(MODULE_NAME).controller('AdminController',
 						  headers: '{"Content-Type": "application/json;charset=utf-8"}'
 				}
 				$http(params).then((tx_response) => { */
-				$http.get(SPRING_DELETEBYLABELURL_URI + "/" + label).then((tx_response) => {
-					if(tx_response.status == 200) {
-						$scope.URLs = $scope.URLs.filter((x) => x.label !== label)
-					}					
-				})
+
 			}
 			
 			const getExtensionURL = function (baseURL) {
@@ -82,4 +98,4 @@ angular.module(MODULE_NAME).controller('AdminController',
 				return max
 			}
 		}]
-);
+)

@@ -5,7 +5,7 @@
 	--brunswick-green: rgb(26, 83, 92);
 }
 
-body, body > * {
+body, body > *:not(.jconfirm) {
 	background-color: var(--light-taupe);
 }
 

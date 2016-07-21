@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -348,6 +349,115 @@ public class UrlService {
 		txr.setField(l);
 		return txr;
 	}
+
+	public TXResponse<List<List<Long>>> readURLTrackingProRatum(String proratum) {
+		Random r = new Random();
+		List<List<Long>> lll = new ArrayList<>();
+		Long  iterate = 0L;
+		int max = 1;
+		switch (proratum) {
+		case PRORATUM_WEEKLY:
+			iterate = 1L;
+			max = 7;
+			break;
+		case PRORATUM_MONTHLY:
+			iterate = 7L;
+			max = 30;
+			break;
+		case PRORATUM_YEARLY:
+			iterate = 30L;
+			max = 365;
+			break;
+		default:
+			throw new InvalidDataAccessApiUsageException("Illegal pro-ratum for search time.");
+		}
+		
+		Long step = iterate;
+		while(iterate <= max){
+			List<Long> ll = new ArrayList<>();
+			ll.add(iterate);
+			ll.add(Integer.toUnsignedLong(r.nextInt(30)));
+			ll.add(Integer.toUnsignedLong(r.nextInt(20)));
+			ll.add(Integer.toUnsignedLong(r.nextInt(10)));
+
+			lll.add(ll);
+		}
+		TXResponse<List<List<Long>>> txr = new TXResponse("URL Tracking ProRatum");
+		txr.setField(lll);
+		return txr;
+	}
+	
+	/*public TXResponse<List<List<Long>>> readURLTrackingProRatum(String proratum) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(new Date()); // Give your own date
+		Integer doy = cal.get(Calendar.DAY_OF_YEAR);
+		Integer year = cal.get(Calendar.YEAR);
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_YEAR, doy);
+		calendar.set(Calendar.YEAR, year);
+		
+		List<Date> ld = new ArrayList<>();
+		switch (proratum) {
+		case PRORATUM_WEEKLY:
+			ld = getDatesForProRatum(calendar, 1, 8, 7);
+			break;
+		case PRORATUM_MONTHLY:
+			ld = getDatesForProRatum(calendar, 1, 29, 7);
+			break;
+		case PRORATUM_YEARLY:
+			ld = getDatesForProRatum(calendar, 30, 361, 30);
+			break;
+		default:
+			throw new InvalidDataAccessApiUsageException("Illegal pro-ratum for search time.");
+		}
+		
+		for(Date d: ld){
+			Long anonymousTotal = 0L;
+			Long registeredTotal = 0L;
+			if(year < cal.get(Calendar.YEAR)){
+				for(Hit h: hr.findByUrlAndYear(u, cal.get(Calendar.YEAR))){
+					anonymousTotal += h.getAnonymousCount();
+					registeredTotal += h.getRegisteredCount();
+				}
+				for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
+					anonymousTotal += h.getAnonymousCount();
+					registeredTotal += h.getRegisteredCount();
+				}		
+			} else {
+				for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
+					anonymousTotal += h.getAnonymousCount();
+					registeredTotal += h.getRegisteredCount();
+				}			
+			}
+			Long total = anonymousTotal + registeredTotal;
+			Long conversions = userr.countByUrlAndLastUpdatedBetween(u, fromDate, new Date());
+			Long conversionRate = null;
+			if(total == 0) {
+				conversionRate = 0L;
+			} else {
+				Double d = 100 * (conversions/(anonymousTotal*1D));
+				conversionRate = d.longValue();
+			}
+			
+			List<Long> trackingDetails = new ArrayList<>();
+			trackingDetails.add(anonymousTotal);
+			trackingDetails.add(conversions);
+			trackingDetails.add(conversionRate);
+		}
+		return null;
+	}*/
+
+	/*private List<Date> getDatesForProRatum(Calendar calendar, int i, int j, int k) {
+		List<Date> ld = new ArrayList<>();
+		
+		ld.add(new Date(calendar.getTimeInMillis()));
+		for(int a = i; a <= j; a += k) {
+			calendar.add(Calendar.DATE, -1* a);
+			ld.add(new Date(calendar.getTimeInMillis()));
+		}
+		return ld;
+	}*/
 	
 	
 }

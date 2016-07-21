@@ -20,19 +20,20 @@ angular.module(MODULE_NAME).service('Res', ['$rootScope', function ($rootScope) 
 				if(scope._rawStyles === undefined) {
 					scope._rawStyles = []
 				}
-				scope._rawStyles.push(style)
+				scope._rawStyles.push([hrefs[i], style])
 		  		scope._styles.push( document.head.appendChild(style) )
 		
-				scope.$on('$destroy', function() {
-					for (let key in scope._styles){
-						scope._styles[key].parentNode.removeChild(scope._rawStyles[key])
-						delete scope._styles[key]
-						delete scope._rawStyles[key]
-					}
-				})			
+				scope.$on('$destroy', this.clean_styles)			
 			}
 		},
-		
+		clean_styles: function() {
+			for (let key in scope._styles){
+				console.log('deleting style ' + scope._rawStyles[key][0])
+				scope._styles[key].parentNode.removeChild(scope._rawStyles[key][1])
+				scope._styles.splice(key, 1)
+				scope._rawStyles.splice(key,1)
+			}
+		},
 		script: function(inp) {
 			let hrefs = []
 			if(typeof inp === 'string') {
@@ -50,17 +51,20 @@ angular.module(MODULE_NAME).service('Res', ['$rootScope', function ($rootScope) 
 				if(scope._rawScripts === undefined) {
 					scope._rawScripts = []
 				}
-				scope._rawScripts.push(script)
+				scope._rawScripts.push([hrefs[i], script])
 				scope._scripts.push( document.head.appendChild(script) )
 			
-				scope.$on('$destroy', function() {
-					for (let key in scope._scripts){
-						scope._scripts[key].parentNode.removeChild(scope._rawScripts[key])
-						delete scope._scripts[key]
-						delete scope._rawScripts[key]
-					}
-				})							
+				scope.$on('$destroy', this.clean_scripts)							
 			}
-		}	
+		},
+		clean_scripts: function() {
+			for (let key in scope._scripts){
+				console.log('deleting script ' + scope._rawScripts[key][0])
+				scope._scripts[key].parentNode.removeChild(scope._rawScripts[key][1])
+				scope._scripts.splice(key,1)
+				scope._rawScripts.splice(key,1)
+			}
+		}
+		
 	}
 }])

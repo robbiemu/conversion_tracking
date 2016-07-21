@@ -24,6 +24,11 @@ public class UrlController {
 	@Autowired
 	UrlService us;
 
+	@RequestMapping("/url/tracking/{proratum}")
+	public TXResponse<List<List<Long>>> getURLTrackingProRatum(@PathVariable String proratum) {
+		return us.readURLTrackingProRatum(proratum);
+	}	
+	
 	@RequestMapping("/urls/and/tracking")
 	public TXResponse<List<Tuple<List<Long>, URL>>> getURLsWithTracking() {
 		return us.readURLsWithTracking();

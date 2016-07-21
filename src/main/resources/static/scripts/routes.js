@@ -7,7 +7,10 @@ angular.module(MODULE_NAME)
                 controller: 'HomeController',
                 controllerAs: 'homeController',
                 resolve: {
-                    factory: function ($q, $rootScope, $location, $http, Auth) {
+                    factory: function ($q, $rootScope, $location, $http, Auth, Res) {
+                		Res.clean_scripts()
+                		Res.clean_styles()
+                		
                     	let checkAdmin = false
                     	checkRouting($q, $rootScope, $location, Auth, checkAdmin)
                     }
@@ -18,8 +21,11 @@ angular.module(MODULE_NAME)
                 controller: 'AdminController',
                 controllerAs: 'adminController',
                 resolve: {
-                    factory: function ($q, $rootScope, $location, $http, Auth) {
-                    	loadTrackingDetails($rootScope, $http)
+                	factory: function ($q, $rootScope, $location, $http, Auth, Res) {
+                		Res.clean_scripts()
+                		Res.clean_styles()
+
+                		loadTrackingDetails($rootScope, $http)
                     	let checkAdmin = true
                     	checkRouting($q, $rootScope, $location, Auth, checkAdmin)
                     }
@@ -28,25 +34,48 @@ angular.module(MODULE_NAME)
             .when('/login', {
                 templateUrl: LOGIN_PAGE,
                 controller: 'UserController',
-                controllerAs: 'userController'
+                controllerAs: 'userController',
+                resolve: {
+                	factory: function (Res) { 
+                		Res.clean_scripts()
+                		Res.clean_styles()
+                	}
+                }
             })
             .when('/register', {
                 templateUrl: REGISTER_PAGE,
                 controller: 'UserController',
-                controllerAs: 'userController'
+                controllerAs: 'userController',
+            	resolve: {
+                	factory: function (Res) { 
+                		Res.clean_scripts()
+                		Res.clean_styles()
+                	}
+            	}
             })
             .when('/register/:extension', {
                 templateUrl: REGISTER_PAGE,
                 controller: 'UserController',
                 controllerAs: 'userController',
                 resolve: {
-                	factory: get_url_details
+                	factory: function ($rootScope, $location, $http, Res) { 
+                		Res.clean_scripts()
+                		Res.clean_styles()
+                		
+                		get_url_details($rootScope, $location, $http)
+                	}
                 }
             })
            .when('/login/:extension', {
                 templateUrl: LOGIN_PAGE,
                 controller: 'UserController',
-                controllerAs: 'userController'
+                controllerAs: 'userController',
+                resolve: {
+                	factory: function (Res) { 
+                		Res.clean_scripts()
+                		Res.clean_styles()
+                	}
+                }
             })
             .otherwise('/')
         }
