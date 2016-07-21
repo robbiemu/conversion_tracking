@@ -1,3 +1,14 @@
+:root {
+	--sea-blue: rgb(0, 170, 180);
+	--light-taupe: rgb(245, 249, 214);
+	--corn: rgb(255, 230, 109);
+	--brunswick-green: rgb(26, 83, 92);
+}
+
+body, body > * {
+	background-color: var(--light-taupe);
+}
+
 .red {
 	color: red;
 }
@@ -10,6 +21,8 @@
 
 .jumbotron {
 	margin-bottom: 0;
+	background-color: var(--sea-blue);
+	color: white;
 }
 
 .jumbotron h1, .jumbotron h2, .jumbotron h3, .jumbotron h4, .jumbotron h5, .jumbotron h6 {
@@ -19,5 +32,9 @@
 .subotron {
 	margin: 0;
 	padding: 0.6em 0 0.3em 1em;
-	background-color: rgba(0,0,0,0.1)	
+	background-color: rgba(0,0,0,0.1);
+	z-index: 1000;
+	-webkit-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
+	box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);	
 }

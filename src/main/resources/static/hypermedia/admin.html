@@ -21,7 +21,7 @@
       </div>
       <div class="tab-pane" id="newUrls">
         <h1>New URLs</h1>
-        <ul class="outlined col-sm-8">
+        <ul id="new_urls" class="outlined col-sm-8">
           <li>
             <span id="new_url_button" class="glyphicon glyphicon-plus" aria-hidden="true"></span><i id="add_text" class="input_new_url invert_visibility">add new record</i>
             <form id="input_new_url" class="input_new_url form-horizontal" ng-submit="new_url()">
@@ -58,8 +58,8 @@
 				<option class="btn-secondary-outlined" ng-repeat="state in states">{{state}}</option>
 			</select>
         </div>
-        <ul class="outlined col-sm-8" ng-repeat="url in URLs">
-            <li><span class="big bold">{{url.anonymousCount}}</span><code><a href="#{{url.baseURL}}/{{url.extensionURL}}">{{url.baseURL}}/{{url.extensionURL}}</a></code> - <span class="bold">{{url.label}}</span> - {{url.description}}</li>
+        <ul class="outlined col-sm-8">
+            <li ng-repeat="url in URLs"><span class="big bold">{{url.anonymousCount}}</span><div class="lineitem"><code><a href="#{{url.baseURL}}/{{url.extensionURL}}">{{url.baseURL}}/{{url.extensionURL}}</a></code> - <span class="bold">{{url.label}}</span> - {{url.description}}</div></li>
           </ul>
       </div>
     </div>

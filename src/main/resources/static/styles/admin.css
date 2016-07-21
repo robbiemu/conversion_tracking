@@ -12,6 +12,37 @@ ul {
 	list-style-type: none;
 }
 
+.outlined {
+	background-color: rgba(255,255,255,0.5);
+}
+
+#tabs {
+	background-color: rgba(255,255,255,0.5);
+}
+#tabs > li > a {
+	font-weight: 900;
+	font-size: 1.2em;
+}
+#tabs > li:not(.active) {
+	border-right: solid 2px rgba(0,0,0,0.1);
+}
+#tabs > li:not(.active) > a, #tabs > li:hover {
+	color: var(--brunswick-green);
+	background-color: rgba(255,255,255,0.5);
+}
+#tabs > li.active > a {
+	color: black;
+	background-color: var(--light-taupe);
+}
+.nav-tabs {
+	border-bottom: initial;
+}
+
+.lineitem {
+	display: inline-block;
+	vertical-align: 0.3em;
+}
+
 .big { font-size: 2em; }
 
 .bold { font-weight: 900; }
