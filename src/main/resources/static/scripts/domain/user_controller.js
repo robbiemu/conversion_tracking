@@ -1,6 +1,6 @@
 angular.module(MODULE_NAME).controller('UserController', 
-    [ '$routeParams', '$scope', '$http', '$location', 'Auth', function ($routeParams, $scope, $http, $location, Auth) {
-    	    	
+    [ '$routeParams', '$scope', '$http', '$location', 'Auth', 'Res', function ($routeParams, $scope, $http, $location, Auth, Res) {
+
 		  $scope.navTo = function(url) {
 			    if ($location.path() === url) {
 			      $route.reload()
@@ -23,74 +23,12 @@ angular.module(MODULE_NAME).controller('UserController',
 			console.log("userController")
 			console.log("considering css for " + $location.path())
 			if(/^\/login/.test($location.path())){
-				style("styles/login.css")
+				Res.style("styles/login.css")
 			}
 			if(/^\/register/.test($location.path())){
-				style("styles/register.css")
+				Res.style("styles/register.css")
 			}
 		})
-		
-			const style = function(inp) {
-				let hrefs = []
-				if(typeof inp === 'string') {
-					hrefs.push(inp)
-				} else {
-					hrefs = inp
-				}
-				$scope._styles=[]
-				for(let i in hrefs){
-					console.log("styling page with " + hrefs[i])
-			  		let style = document.createElement('link')
-			  		style.type = 'text/css'
-			  		style.href = hrefs[i]
-			  		style.rel = 'stylesheet'
-			
-					if($scope._rawStyles === undefined) {
-						$scope._rawStyles = []
-					}
-					$scope._rawStyles.push(script)
-			  		$scope._styles.push( document.head.appendChild(style) )
-			
-					$scope.$on('$destroy', function() {
-						for (let key in $scope._styles){
-							$scope._styles[key].parentNode.removeChild($scope._rawStyles[key])
-							delete $scope._styles[key]
-							delete $scope._rawStyles[key]
-						}
-					})			
-				}
-			}
-		
-			const script = function(inp) {
-				let hrefs = []
-				if(typeof inp === 'string') {
-					hrefs.push(inp)
-				} else {
-					hrefs = inp
-				}
-				$scope._scripts=[]
-				for(let i in hrefs){
-					console.log("loading javascript: " + hrefs[i])
-					let script = document.createElement('script')
-					script.type = 'text/javascript'
-					script.src = hrefs[i]
-				
-					if($scope._rawScripts === undefined) {
-						$scope._rawScripts = []
-					}
-					$scope._rawScripts.push(script)
-					$scope._scripts.push( document.head.appendChild(script) )
-					
-					$scope.$on('$destroy', function() {
-						for (let key in $scope._scripts){
-							$scope._scripts[key].parentNode.removeChild($scope._rawScripts[key])
-							delete $scope._scripts[key]
-							delete $scope._rawScripts[key]
-						}
-					})							
-				}
-			}
-
 		
 		$scope.login = function () {
 		    $http.post(SPRING_LOGIN_URI, $scope.user).then((tx_response) => {
