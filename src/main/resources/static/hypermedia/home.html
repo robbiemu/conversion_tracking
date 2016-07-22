@@ -1,12 +1,22 @@
 <div id="home_outer">
-  <div class="jumbotron">
-    <div class="col-sm-offset-1">
-    <h1>Welcome to Conversion tracking!</h1>
+  <h1>Three Buttons</h1>
+  <p>keep pressing buttons, get as high as you can</p>
+  <section id="game_content">
+    <div id="top">Points: <span id="points_numeric"></span></div>
+    <div id="game">
+      <div id="left">
+        <div id="current_modifiers"></div>
+        <div id="modifier" class="round button">+<span id="modifier_text">1</span></div>
+        <div id="modifiers_cost"></div>
+      </div>
+      <div id="mid">
+        <div id="per_click" class="round button">+<span id="per_click_text">1</span></div>
+      </div>
+      <div id="right">
+        <div id="count_of_autoclickers"></div>
+        <div id="autoclick" class="round button">+<span id="autoclick_text">1</span>agent</div>
+        <div id="autoclick_cost"></div>
+      </div>
     </div>
-  </div>
-  <div class="col-sm-12 subotron">
-    <span><strong>{{label}}</strong></span>
-    <span>{{description}}</span>
-  </div>
-  
+  </section>
 </div>

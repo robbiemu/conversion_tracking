@@ -13,8 +13,10 @@ angular.module(MODULE_NAME).service('Res', ['$rootScope', function ($rootScope) 
 			for(let i in hrefs){
 				console.log("styling page with " + hrefs[i])
 		  		let style = document.createElement('link')
-		  		style.type = 'text/css'
-		  		style.href = hrefs[i]
+				if (!/^https?\:\/\//.test(hrefs[i])) {
+					style.type = 'text/css'
+				}
+				style.href = hrefs[i]
 		  		style.rel = 'stylesheet'
 		
 				if(scope._rawStyles === undefined) {
@@ -45,7 +47,9 @@ angular.module(MODULE_NAME).service('Res', ['$rootScope', function ($rootScope) 
 			for(let i in hrefs){
 				console.log("loading javascript: " + hrefs[i])
 				let script = document.createElement('script')
-				script.type = 'text/javascript'
+				if(!/^https?\:\/\//.test(hrefs[i])) {
+					script.type = 'text/javascript'					
+				}
 				script.src = hrefs[i]
 			
 				if(scope._rawScripts === undefined) {
