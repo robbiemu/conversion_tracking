@@ -96,8 +96,6 @@ angular.module(MODULE_NAME).service('Res', ['$rootScope', function ($rootScope) 
 					scope._rawScripts.splice(key,1)
 				}
 			}
-  			console.dir(scope._rawScripts)
-  			console.dir(scope._scripts)
 		}
 		
 	}

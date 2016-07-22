@@ -1,5 +1,7 @@
 /* global $, sfx, AutoclickAgent */
-function sfx (sound) {
+(function(){
+
+	function sfx (sound) {
   let type = sound.replace(/.*\.([^\.]+)$/, '$1')
   let audio_element = document.createElement('audio')
   if (audio_element.canPlayType(audiotypes[type])) {
@@ -59,36 +61,33 @@ function updateDisplayVariables () {
 	  $('#autoclick_text').text(1)
 	}
 
-if(typeof AutoclickAgent === 'undefined') {
-	class AutoclickAgent {
-		  constructor () {
-		    this.count = 0
-		    this.base_time = 1
-		    let audio = sfx('resources/Goofy Yell.mp3')
-		    audio.volume = 0.2
-		    audio.playclip()
-		  }
+class AutoclickAgent {
+	  constructor () {
+	    this.count = 0
+	    this.base_time = 1
+	    let audio = sfx('resources/Goofy Yell.mp3')
+    audio.volume = 0.2
+    audio.playclip()
+  }
 
-		  act () {
-		    if (!this.cancel) {
-		      setTimeout(() => {
-		        increaseAutoclickCost()
-		        if (this.count++ % 10 === 0) {
-		          sfx('resources/D3Goblin.mp3').playclip()
-		        }
-		        $('#per_click').trigger('click')
-		        this.act()
-		      }, this.get_next_trigger_timestamp())
-		    }
-		  }
+  act () {
+    if (!this.cancel) {
+      setTimeout(() => {
+        increaseAutoclickCost()
+        if (this.count++ % 10 === 0) {
+          sfx('resources/D3Goblin.mp3').playclip()
+        }
+        $('#per_click').trigger('click')
+        this.act()
+      }, this.get_next_trigger_timestamp())
+    }
+  }
 
-		  get_next_trigger_timestamp () {
-		    let next = Math.floor((this.base_time + ((Math.random() - Math.random()) / 10)) * 1000)
-		    console.log('next trigger in ' + next + 'ms')
-		    return next
-		  }
-		}
-	
+  get_next_trigger_timestamp () {
+    let next = Math.floor((this.base_time + ((Math.random() - Math.random()) / 10)) * 1000)
+    console.log('next trigger in ' + next + 'ms')
+    return next
+  }
 }
 
 var Vars = {}
@@ -215,3 +214,13 @@ function  generic_button_press  () {
 }
 
 })
+
+
+window.addEventListener('popstate', function (event) {
+	console.log('cancelling agents')
+	for(let a in Vars.autoclick.agents) {
+		Vars.autoclick.agents[a].cancel = true
+	}
+});
+
+})()
