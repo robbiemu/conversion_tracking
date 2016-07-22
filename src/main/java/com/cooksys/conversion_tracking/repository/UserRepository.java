@@ -13,9 +13,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findByNameAndPassword(String name, String password);
 	List<User> findByArea(Area area);
 	List<User> findByUrl(URL url);
-	List<User> findByUrlAndLastUpdatedBetween(URL url, Date start, Date end);
+	List<User> findByUrlAndCreatedBetween(URL url, Date start, Date end);
 	Long countByUrl(URL url);
-	Long countByUrlAndLastUpdatedBetween(URL url, Date start, Date end);
+	Long countByUrlAndCreatedBetween(URL url, Date start, Date end);
 	Integer countByArea(Area area);
 	User findOneByName(String username);
 }

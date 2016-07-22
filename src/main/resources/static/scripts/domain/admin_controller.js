@@ -8,8 +8,8 @@ angular.module(MODULE_NAME).controller('AdminController',
 				console.log("adminController")
 				console.log("considering css for " + $location.path())
 				if($location.path() ===  "/admin"){
-					Res.style(['scripts/node_modules/n3-charts/build/LineChart.css', 'scripts/node_modules/jquery-confirm/css/jquery-confirm.css', 'styles/admin.css'])
-					Res.script(['scripts/node_modules/n3-charts/build/LineChart.js', 'scripts/node_modules/jquery-confirm/js/jquery-confirm.js', 'scripts/admin.js'])
+					Res.style(['scripts/node_modules/jquery-confirm/css/jquery-confirm.css', 'styles/admin.css'])
+					Res.script(['scripts/node_modules/plotly/plotly-online.min.js', 'scripts/node_modules/jquery-confirm/js/jquery-confirm.js', 'scripts/admin.js'])
 				}
 			})
 	
@@ -18,66 +18,89 @@ angular.module(MODULE_NAME).controller('AdminController',
 			$scope.previous_selection = 'All Time'
 
 			const reloadURLs = function(url, degree) {
-				$http.get(url + '/' + degree).then((tx_response) => {
-					if(tx_response.status == 200) {
-						$scope.URLs = []
-						for(let e in tx_response.data.field){
-							let url = tx_response.data.field[e].right
-							url.anonymousCount = tx_response.data.field[e].left[0]
-							url.conversions = tx_response.data.field[e].left[1]
-							url.conversionRate = tx_response.data.field[e].left[2]
-							url.num= e
-							
-							$http.get('/url/tracking/' + degree).then((r) => {
-								if(r.status == 200){
-									for(let i in r.data) {
-										let anon = {
-												x: r.data[i][0],
-												y: r.data[i][1],
-												name: 'anonymous',
-												type: 'scatter'
+				if(degree !== undefined) {
+					$http.get(url + '/' + degree).then((tx_response) => {
+						if(tx_response.status == 200) {
+							$scope.URLs = []
+							for(let e in tx_response.data.field){
+								let url = tx_response.data.field[e].right
+								url.anonymousCount = tx_response.data.field[e].left[0]
+								url.conversions = tx_response.data.field[e].left[1]
+								url.conversionRate = tx_response.data.field[e].left[2]
+								url.num= e
+								
+								if(degree !== undefined) {
+									$http.get(`/url/${url.label}/tracking/${degree}`).then((r) => {
+										if(r.status == 200){
+											let anon = {
+													x: r.data.field[0],
+													y: r.data.field[1],
+													name: 'anon hits',
+													type: 'scatter',
+												    line: { shape:'spline' }
+											}
+											let regis = {
+													x: r.data.field[0],
+													y: r.data.field[2],
+													name: 'user hits',
+													type: 'scatter',
+												    line:{ shape: 'spline' }
+	
+											}
+											let conv = {
+													x: r.data.field[0],
+													y: r.data.field[3],
+													name: 'new users',
+													type: 'scatter',
+												    line: { shape: 'spline' }
+	
+											}
+											let layout = {
+													xaxis: {
+														title: 'days',
+														autorange: 'reversed'
+													},
+													yaxis: {
+														title: 'hits'
+													},
+													margin: { t: 0 }
+											}
+											Plotly.newPlot('graph_' + e, [anon, regis, conv], layout)
 										}
-										let regis = {
-												x: r.data[i][0],
-												y: r.data[i][2],
-												name: 'registered',
-												type: 'scatter'
-										}
-										let conv = {
-												x: r.data[i][0],
-												y: r.data[i][2],
-												name: 'coversion rate',
-												type: 'scatter'
-										}
-										let layout = {
-												xaxis: {
-													title: degree
-												},
-												yaxis: {
-													title: 'Hits'
-												},
-												margin: { t: 0 }
-											};
-										Plotly.newPlot('graph_' + e, [anon, regis, conv], layout)
-										
-
-									}
-								}
-							})
-
-							$scope.URLs.push(url)
+									})
+								}	
+								$scope.URLs.push(url)
+							}
 						}
-					}
-				})									
-			}
-						
-			$scope.prorate = function() {
-				if(STATES[this.selection]) {
-					reloadURLs(SPRING_TRACKING_DETAILS_URI, STATES[this.selection])
-				} else if($scope.previous_selection !== $scope.selection) {
-					reloadURLs(SPRING_TRACKING_DETAILS_URI)
+					})
+				} else {
+					$('.js-plotly-plot').hide()
+					$http.get(url).then((tx_response) => {
+						if(tx_response.status == 200) {
+							$scope.URLs = []
+							for(let e in tx_response.data.field){
+								let url = tx_response.data.field[e].right
+								url.anonymousCount = tx_response.data.field[e].left[0]
+								url.conversions = tx_response.data.field[e].left[1]
+								url.conversionRate = tx_response.data.field[e].left[2]
+								url.num= e
+								
+								$scope.URLs.push(url)
+							}
+						}
+					})
 				}
-				$scope.previous_selection = $scope.selection
+			}
+
+			$scope.prorate = function() {
+				if($scope.previous_selection !== $scope.selection) {
+					if(STATES[this.selection] !== undefined) {
+						reloadURLs(SPRING_TRACKING_DETAILS_URI, STATES[this.selection])
+					} else {
+						reloadURLs(SPRING_TRACKING_DETAILS_URI)
+					}
+					$scope.previous_selection = $scope.selection					
+				}
 			}
 			
 			$scope.new_url = function () {

@@ -2,6 +2,7 @@ package com.cooksys.conversion_tracking.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -50,21 +51,16 @@ public class UrlService {
 		Integer doy = cal.get(Calendar.DAY_OF_YEAR);
 		Integer year = cal.get(Calendar.YEAR);
 		
-		for(Hit h: hr.findByUrl(u)) {
-			if((h.getDayOfYear().equals(doy)) && (h.getYear().equals(year))) {
-				h.increment();
-				hr.save(h);
-				txr.setField(true);
-				break;
-			}
-		}
-
-		if(txr.getField() == null) {
-			Hit h = new Hit();
+		Hit h = hr.findOneByUrlAndYearAndDayOfYear(u, year, doy);
+		if(h != null) {
+			h.increment();
+		} else {
+			h = new Hit();
+			h.setVersion(HITS_TABLE_VERSION);
 			h.setAnonymousCount(1L);
 			h.setUrl(u);
-			hr.save(h);
 		}
+		hr.save(h);
 		txr.setField(true);
 		
 		return txr;
@@ -303,7 +299,7 @@ public class UrlService {
 				year -= 1;
 				break;
 			default:
-				throw new InvalidDataAccessApiUsageException("Illegal pro-ratum for search time.");
+				throw new InvalidDataAccessApiUsageException("Illegal pro-ratum for search time '"+proratum+"'.");
 		}
 		
 		Calendar calendar = Calendar.getInstance();
@@ -331,7 +327,7 @@ public class UrlService {
 				}			
 			}
 			Long total = anonymousTotal + registeredTotal;
-			Long conversions = userr.countByUrlAndLastUpdatedBetween(u, fromDate, new Date());
+			Long conversions = userr.countByUrlAndCreatedBetween(u, fromDate, new Date());
 			Long conversionRate = null;
 			if(total == 0) {
 				conversionRate = 0L;
@@ -350,8 +346,12 @@ public class UrlService {
 		return txr;
 	}
 
-	public TXResponse<List<List<Long>>> readURLTrackingProRatum(String proratum) {
-		Random r = new Random();
+	public TXResponse<List<List<Long>>> readURLTrackingProRatum(String label, String proratum) {
+		URL u = ur.findOneByLabel(label);
+		if(u == null) {
+			throw new InvalidDataAccessApiUsageException("Url with label must exist in database!");
+		}
+		
 		List<List<Long>> lll = new ArrayList<>();
 		Long  iterate = 0L;
 		int max = 1;
@@ -372,93 +372,40 @@ public class UrlService {
 			throw new InvalidDataAccessApiUsageException("Illegal pro-ratum for search time.");
 		}
 		
+		Calendar calendar = Calendar.getInstance();
+		
 		Long step = iterate;
+		List<Long> llday = new ArrayList<>();
+		List<Long> llanon = new ArrayList<>();
+		List<Long> llregi = new ArrayList<>();
+		List<Long> llconv = new ArrayList<>();
 		while(iterate <= max){
-			List<Long> ll = new ArrayList<>();
-			ll.add(iterate); 
-			ll.add(Integer.toUnsignedLong(r.nextInt((int)(30*step))));
-			ll.add(Integer.toUnsignedLong(r.nextInt((int)(20*step))));
-			ll.add(Integer.toUnsignedLong(r.nextInt((int)(10*step))));
+			llday.add(iterate);
+			for(int i = 0; i < step; i++){
+				Date fromDate = new Date(calendar.getTimeInMillis());
+				calendar.add(Calendar.DATE, -1);
+				Hit h = hr.findOneByUrlAndYearAndDayOfYear(u, calendar.get(Calendar.YEAR), calendar.get(Calendar.DAY_OF_YEAR));
+				if(h == null){
+					llanon.add(0L);
+					llregi.add(0L);
+				} else {
+					llanon.add(h.getAnonymousCount());
+					llregi.add(h.getRegisteredCount());
+				}
+				System.out.println(new Date(calendar.getTimeInMillis()));
+				System.out.println(fromDate);
+				llconv.add( userr.countByUrlAndCreatedBetween(u, new Date(calendar.getTimeInMillis()), fromDate) );
+			}
 
-			lll.add(ll);
 			iterate += step;
 		}
-		TXResponse<List<List<Long>>> txr = new TXResponse("URL Tracking ProRatum");
+		lll.add(llday);
+		lll.add(llanon);
+		lll.add(llregi);
+		lll.add(llconv);
+		TXResponse<List<List<Long>>> txr = new TXResponse<>("URL Tracking ProRatum");
 		txr.setField(lll);
 		return txr;
 	}
-	
-	/*public TXResponse<List<List<Long>>> readURLTrackingProRatum(String proratum) {
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(new Date()); // Give your own date
-		Integer doy = cal.get(Calendar.DAY_OF_YEAR);
-		Integer year = cal.get(Calendar.YEAR);
-		
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_YEAR, doy);
-		calendar.set(Calendar.YEAR, year);
-		
-		List<Date> ld = new ArrayList<>();
-		switch (proratum) {
-		case PRORATUM_WEEKLY:
-			ld = getDatesForProRatum(calendar, 1, 8, 7);
-			break;
-		case PRORATUM_MONTHLY:
-			ld = getDatesForProRatum(calendar, 1, 29, 7);
-			break;
-		case PRORATUM_YEARLY:
-			ld = getDatesForProRatum(calendar, 30, 361, 30);
-			break;
-		default:
-			throw new InvalidDataAccessApiUsageException("Illegal pro-ratum for search time.");
-		}
-		
-		for(Date d: ld){
-			Long anonymousTotal = 0L;
-			Long registeredTotal = 0L;
-			if(year < cal.get(Calendar.YEAR)){
-				for(Hit h: hr.findByUrlAndYear(u, cal.get(Calendar.YEAR))){
-					anonymousTotal += h.getAnonymousCount();
-					registeredTotal += h.getRegisteredCount();
-				}
-				for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
-					anonymousTotal += h.getAnonymousCount();
-					registeredTotal += h.getRegisteredCount();
-				}		
-			} else {
-				for(Hit h: hr.findByUrlAndYearAndDayOfYearGreaterThanEqual(u, year, doy)){
-					anonymousTotal += h.getAnonymousCount();
-					registeredTotal += h.getRegisteredCount();
-				}			
-			}
-			Long total = anonymousTotal + registeredTotal;
-			Long conversions = userr.countByUrlAndLastUpdatedBetween(u, fromDate, new Date());
-			Long conversionRate = null;
-			if(total == 0) {
-				conversionRate = 0L;
-			} else {
-				Double d = 100 * (conversions/(anonymousTotal*1D));
-				conversionRate = d.longValue();
-			}
-			
-			List<Long> trackingDetails = new ArrayList<>();
-			trackingDetails.add(anonymousTotal);
-			trackingDetails.add(conversions);
-			trackingDetails.add(conversionRate);
-		}
-		return null;
-	}*/
 
-	/*private List<Date> getDatesForProRatum(Calendar calendar, int i, int j, int k) {
-		List<Date> ld = new ArrayList<>();
-		
-		ld.add(new Date(calendar.getTimeInMillis()));
-		for(int a = i; a <= j; a += k) {
-			calendar.add(Calendar.DATE, -1* a);
-			ld.add(new Date(calendar.getTimeInMillis()));
-		}
-		return ld;
-	}*/
-	
-	
 }

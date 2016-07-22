@@ -24,9 +24,9 @@ public class UrlController {
 	@Autowired
 	UrlService us;
 
-	@RequestMapping("/url/tracking/{proratum}")
-	public TXResponse<List<List<Long>>> getURLTrackingProRatum(@PathVariable String proratum) {
-		return us.readURLTrackingProRatum(proratum);
+	@RequestMapping("/url/{label}/tracking/{proratum}")
+	public TXResponse<List<List<Long>>> getURLTrackingProRatum(@PathVariable String label, @PathVariable String proratum) {
+		return us.readURLTrackingProRatum(label, proratum);
 	}	
 	
 	@RequestMapping("/urls/and/tracking")
