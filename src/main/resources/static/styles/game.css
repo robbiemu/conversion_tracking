@@ -39,8 +39,15 @@ p {
 
 section#game_content {
   box-shadow: inset 0 2rem 1rem -2rem black;
-  background-color: var(--brunswick-green);
+  background-color: var(--light-taupe);
   font-size: 1.5rem;
+}
+
+#top, #game { 
+	color: initial;
+}
+#per_click, #per_click_text, #modifier, #modifier_text, #autoclick, #autoclick_text {
+	color:white;
 }
 
 div#game {

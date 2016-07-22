@@ -1,5 +1,9 @@
 angular.module(MODULE_NAME).service('Res', ['$rootScope', function ($rootScope) {
 	var scope = $rootScope
+	scope._scripts = scope._scripts||[]
+	scope._styles = scope._styles||[]
+	scope._rawScripts = scope._rawScripts||[]
+	scope._rawStyles = scope._rawStyles||[]
 	
 	return {
 		style: function(inp) {
@@ -29,11 +33,23 @@ angular.module(MODULE_NAME).service('Res', ['$rootScope', function ($rootScope) 
 			}
 		},
 		clean_styles: function() {
-			for (let key in scope._styles){
+			let removables = []
+			for (let key in scope._rawStyles){
 				console.log('deleting style ' + scope._rawStyles[key][0])
 				scope._styles[key].parentNode.removeChild(scope._rawStyles[key][1])
-				scope._styles.splice(key, 1)
-				scope._rawStyles.splice(key,1)
+				removables.push(key)
+			}
+			for(let key in removables) {
+				if(scope._styles.length == 1) {
+					scope._styles.pop()
+				} else {
+					scope._styles.splice(key,1)
+				}
+				if(scope._rawStyles.length == 1) {
+					scope._rawStyles.pop()
+				} else {
+					scope._rawStyles.splice(key,1)
+				}
 			}
 		},
 		script: function(inp) {
@@ -62,12 +78,26 @@ angular.module(MODULE_NAME).service('Res', ['$rootScope', function ($rootScope) 
 			}
 		},
 		clean_scripts: function() {
-			for (let key in scope._scripts){
+			let removables = []
+			for (let key in scope._rawScripts){
 				console.log('deleting script ' + scope._rawScripts[key][0])
 				scope._scripts[key].parentNode.removeChild(scope._rawScripts[key][1])
-				scope._scripts.splice(key,1)
-				scope._rawScripts.splice(key,1)
+				removables.push(key)
 			}
+			for(let key in removables) {
+				if(scope._scripts.length == 1) {
+					scope._scripts.pop()
+				} else {
+					scope._scripts.splice(key,1)
+				}
+				if(scope._rawScripts.length == 1) {
+					scope._rawScripts.pop()
+				} else {
+					scope._rawScripts.splice(key,1)
+				}
+			}
+  			console.dir(scope._rawScripts)
+  			console.dir(scope._scripts)
 		}
 		
 	}

@@ -3,6 +3,65 @@
 	--light-taupe: rgb(245, 249, 214);
 	--corn: rgb(255, 230, 109);
 	--brunswick-green: rgb(26, 83, 92);
+	font-size: 12pt;
+}
+
+#outlink {
+	background-color: var(--brunswick-green);
+	min-width: 100vw;
+	min-height: 3rem;
+	line-height: 3rem;
+	padding: 0;
+}
+#outlink a img {
+	height: 0.67rem;
+}
+#outlink a:first-child {
+	margin-right: 1.67rem;
+}
+#outlink a {
+	display: inline-block;
+	float:right;
+	color: white;
+	text-decoration: none;
+	font-weight: 900;
+	font-size: 1.67rem;
+	margin-left: 2rem;
+	margin-top: 0.167rem;
+}
+#outlink a:hover {
+	color: var(--corn);
+}
+#db{
+	width:2.5rem;
+	height: 2.3rem;
+	display: inline-block;
+	background-color: rgb(30,30,30);
+	font-family: 'Exo 2', sans-serif;
+	font-size: 0.9rem;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 800;
+	font-stretch: normal;
+	text-align: center;
+}
+	
+#linkedin {
+	height: 1.67em;
+    width: 2em;
+    margin-top: -0.2em;
+    margin-right: -0.67em;
+	    background: url('https://www.linkedin.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png') left center no-repeat;
+}
+#outlink a#github img {
+	width: auto;
+	height: 2.3rem;
+	margin-bottom: 0.3rem;
+}
+#outlink a#steam img {
+	width: 6rem;
+	height: auto;
+	margin-bottom: 0.3rem;
 }
 
 body, body > *:not(.jconfirm) {
