@@ -28,19 +28,21 @@ angular.module(MODULE_NAME).controller('AdminController',
 								url.conversions = tx_response.data.field[e].left[1]
 								url.conversionRate = tx_response.data.field[e].left[2]
 								url.num= e
-								
+																
 								if(degree !== undefined) {
 									$http.get(`/url/${url.label}/tracking/${degree}`).then((r) => {
 										if(r.status == 200){
+											let x = [...Array( r.data.field[0][ r.data.field[0].length -1 ] ).keys()]
+
 											let anon = {
-													x: r.data.field[0],
+													x: x,
 													y: r.data.field[1],
 													name: 'anon hits',
 													type: 'scatter',
 												    line: { shape:'spline' }
 											}
 											let regis = {
-													x: r.data.field[0],
+													x: x,
 													y: r.data.field[2],
 													name: 'user hits',
 													type: 'scatter',
@@ -48,7 +50,7 @@ angular.module(MODULE_NAME).controller('AdminController',
 	
 											}
 											let conv = {
-													x: r.data.field[0],
+													x: x,
 													y: r.data.field[3],
 													name: 'new users',
 													type: 'scatter',
@@ -65,7 +67,9 @@ angular.module(MODULE_NAME).controller('AdminController',
 													},
 													margin: { t: 0 }
 											}
-											Plotly.newPlot('graph_' + e, [anon, regis, conv], layout)
+											console.log('graphing graph_' + e)
+											console.dir([anon, regis, conv])
+											Plotly.newPlot('graph_' + e, [anon, regis, conv])
 										}
 									})
 								}	
