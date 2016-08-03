@@ -32,7 +32,7 @@ angular.module(MODULE_NAME).controller('AdminController',
 								if(degree !== undefined) {
 									$http.get(`/url/${url.label}/tracking/${degree}`).then((r) => {
 										if(r.status == 200){
-											let x = [...Array( r.data.field[0][ r.data.field[0].length -1 ] ).keys()]
+											let x = [...Array( r.data.field[0][ r.data.field[0].length -1 ] ).keys()].reverse()
 
 											let anon = {
 													x: x,
@@ -59,16 +59,14 @@ angular.module(MODULE_NAME).controller('AdminController',
 											}
 											let layout = {
 													xaxis: {
-														title: 'days',
-														autorange: 'reversed'
+														title: 'days'/*,
+														autorange: 'reversed' */
 													},
 													yaxis: {
 														title: 'hits'
 													},
 													margin: { t: 0 }
 											}
-											console.log('graphing graph_' + e)
-											console.dir([anon, regis, conv])
 											Plotly.newPlot('graph_' + e, [anon, regis, conv])
 										}
 									})
@@ -117,7 +115,7 @@ angular.module(MODULE_NAME).controller('AdminController',
 			    		let url = tx_response.data
 			    		url.anonymousCount = 0
 			    		$scope.URLs.push(url)
-			    		decorateURLs()
+			    		//decorateURLs()
 			    	} else {
 			    		// failure
 			    	}
